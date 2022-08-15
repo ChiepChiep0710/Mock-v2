@@ -1,9 +1,19 @@
 package controller;
 
+import model.Discount;
+import service.DiscountService;
+import service.impl.DiscountServiceImpl;
+import util.DiscountValidator;
+
+import java.util.List;
 import java.util.Scanner;
 
+import static java.lang.System.out;
+
 public class DiscountController {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final DiscountService discountService = new DiscountServiceImpl();
+    private static DiscountValidator validator = new DiscountValidator();
+    private static Scanner s = new Scanner(System.in);
 
     public static void discountController(){
         int menu;
@@ -12,19 +22,30 @@ public class DiscountController {
             menu = showMenu();
             switch (menu){
                 case 1:{
-
+                    boolean result = discountService.createDiscount();
+                    out.println("CREATE DISCOUNT " + (result ? "SUCCESS" : "FAIL"));
                     break;
                 }
                 case 2:{
-
+                    out.println("Enter the ID to update:");
+                    int id = s.nextInt();
+                    boolean res = discountService.updateDiscount(id);
+                    out.println("UPDATE DISCOUNT " + (res ? "SUCCESS" : "FAIL"));
                     break;
                 }
                 case 3:{
-
+                    out.println("Enter the ID to delete: ");
+                    int id = s.nextInt();
+                    boolean res = discountService.deleteDiscount(id);
+                    out.println("DELETE DISCOUNT " + (res ? "SUCCESS" : "FAIL"));
                     break;
                 }
                 case 4:{
-
+                    List<Discount> discounts = discountService.findAllDiscount();
+                    out.printf("%-20s%-20s%-20s%-20s%-20s%-20s\n", "ID", "TITLE", "TYPE", "DISCOUNT", "START DATE", "END DATE");
+                    for (int i = 0; i < discounts.size(); i++) {
+                        out.printf("%-20s%-20s%-20s%-20.2f%-20s%-20s\n", discounts.get(i).getDiscountId(), discounts.get(i).getTitle(), discounts.get(i).getType(), discounts.get(i).getDiscount(), discounts.get(i).getStartDate(), discounts.get(i).getEndDate());
+                    }
                     break;
                 }
                 case 5:{
@@ -47,8 +68,8 @@ public class DiscountController {
         System.out.println("4. Show all discount");
         System.out.println("5. Exit");
         System.out.print("Your choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        int choice = s.nextInt();
+        s.nextLine();
         return choice;
     }
 }
