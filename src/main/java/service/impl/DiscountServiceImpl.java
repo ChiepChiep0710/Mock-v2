@@ -4,7 +4,7 @@ import dao.DiscountDAO;
 import dao.impl.DiscountDAOImpl;
 import model.Discount;
 import service.DiscountService;
-import util.DiscountValidator;
+import util.Validators.DiscountValidator;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,26 +15,42 @@ import java.util.Scanner;
 import static java.lang.System.out;
 
 public class DiscountServiceImpl implements DiscountService {
-    Scanner input = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
     private static DiscountValidator validator = new DiscountValidator();
     private DiscountDAO discountDAO = new DiscountDAOImpl();
 
     @Override
     public boolean createDiscount() {
         System.out.println("CREATE DISCOUNT: ");
-        System.out.println("Enter Title: ");
-        var title = input.nextLine();
-        System.out.println("Enter Type: ");
-        var type = input.nextLine();
-        System.out.println("Enter Discount: ");
-        var dis = input.nextFloat();
-        input.nextLine();
-        var format = "dd/MM/yyyy";
+        System.out.print("Enter Title: ");
+        String title = scanner.nextLine();
+        System.out.print("Select type discount(0-Percent, 1-Money): ");
+        int type = scanner.nextInt();
+        scanner.nextLine();
+        Double dis = 0.0;
+        if(type == 0){
+            System.out.print("Enter discount percent: ");
+            dis = scanner.nextDouble();
+            scanner.nextLine();
+            while (dis < 0.0 || dis > 100.0){
+                System.out.print("Discount price not correct! Retype: ");
+                dis = scanner.nextDouble();
+                scanner.nextLine();
+            }
+        } else if(type == 1){
+            System.out.print("Enter discount money: ");
+            dis = scanner.nextDouble();
+            scanner.nextLine();
+        } else{
+            out.println("You must type 0 or 1! The discount default 0.");
+        }
+
+        String format = "dd/MM/yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         Date startDate = null;
         while (true) {
-            System.out.println("Enter Start Date: ");
-            var day1 = input.nextLine();
+            System.out.print("Enter Start Date: ");
+            String day1 = scanner.nextLine();
             boolean isvalid = validator.dateValidator(day1);
             if (isvalid) {
                 try {
@@ -49,11 +65,11 @@ public class DiscountServiceImpl implements DiscountService {
         }
         Date endDate = null;
         while (true) {
-            System.out.println("Enter End Date: ");
-            var day2 = input.nextLine();
+            System.out.print("Enter End Date: ");
+            String day2 = scanner.nextLine();
             boolean isvalid = validator.dateValidator(day2);
             try {
-                if (isvalid && dateFormat.parse(day2).compareTo(startDate) > 0) {
+                if (isvalid && dateFormat.parse(day2).compareTo(startDate) >= 0) {
                     try {
                             endDate = dateFormat.parse(day2);
                     } catch (ParseException e) {
@@ -67,7 +83,7 @@ public class DiscountServiceImpl implements DiscountService {
                 e.printStackTrace();
             }
         }
-        var discount = new Discount(title, type, dis, startDate, endDate);
+        Discount discount = new Discount(title, type, dis, startDate, endDate);
         return discountDAO.createDiscount(discount) > 0;
     }
 
@@ -111,33 +127,45 @@ public class DiscountServiceImpl implements DiscountService {
         }
         String isContinue;
         System.out.println("Do you want to change title? (y/n)");
-        isContinue = input.nextLine();
+        isContinue = scanner.nextLine();
         if(isContinue.equalsIgnoreCase("y")) {
-            res.setTitle(input.nextLine());
+            out.print("Enter Title: ");
+            res.setTitle(scanner.nextLine());
         }
 
         System.out.println("Do you want to change type? (y/n)");
-        isContinue = input.nextLine();
+        isContinue = scanner.nextLine();
         if(isContinue.equalsIgnoreCase("y")) {
-            res.setType(input.nextLine());
-        }
-
-        System.out.println("Do you want to change discount? (y/n)");
-        isContinue = input.nextLine();
-        if(isContinue.equalsIgnoreCase("y")) {
-            res.setDiscount(input.nextFloat());
-            input.nextLine();
+            out.print("Select type discount(0-Percent, 1-Money): ");
+            res.setType(scanner.nextInt());
+            scanner.nextLine();
+            if(res.getType() == 0){
+                System.out.print("Enter discount percent: ");
+                res.setDiscount(scanner.nextDouble());
+                scanner.nextLine();
+                while (res.getDiscount() < 0.00 || res.getDiscount() > 100.00){
+                    System.out.print("Discount price not correct! Retype: ");
+                    res.setDiscount(scanner.nextDouble());
+                    scanner.nextLine();
+                }
+            } else if(res.getType() == 1){
+                System.out.print("Enter discount money: ");
+                res.setDiscount(scanner.nextDouble());
+                scanner.nextLine();
+            } else{
+                out.println("You must type 0 or 1! The discount default 0.");
+            }
         }
 
         System.out.println("Do you want to change start date? (y/n)");
-        isContinue = input.nextLine();
+        isContinue = scanner.nextLine();
         if(isContinue.equalsIgnoreCase("y")) {
-            var format = "dd/MM/yyyy";
+            String format = "dd/MM/yyyy";
             SimpleDateFormat dateFormat = new SimpleDateFormat(format);
             Date startDate = null;
             while (true) {
-                System.out.println("Enter Start Date: ");
-                var day1 = input.nextLine();
+                System.out.print("Enter Start Date: ");
+                String day1 = scanner.nextLine();
                 boolean isvalid = validator.dateValidator(day1);
                 if (isvalid) {
                     try {
@@ -154,14 +182,14 @@ public class DiscountServiceImpl implements DiscountService {
         }
 
         System.out.println("Do you want to change End Date? (y/n)");
-        isContinue = input.nextLine();
+        isContinue = scanner.nextLine();
         if(isContinue.equalsIgnoreCase("y")) {
-            var format = "dd/MM/yyyy";
+            String format = "dd/MM/yyyy";
             SimpleDateFormat dateFormat = new SimpleDateFormat(format);
             Date endDate = null;
             while (true) {
-                System.out.println("Enter End Date: ");
-                var day2 = input.nextLine();
+                System.out.print("Enter End Date: ");
+                String day2 = scanner.nextLine();
                 boolean isvalid = validator.dateValidator(day2);
                 try {
                     if (isvalid && dateFormat.parse(day2).compareTo(res.getStartDate()) > 0) {
