@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddressDAOImpl implements AddressDAO {
+
     @Override
     public int save(Address address) {
         try(Connection connection = DBUtil.getInstance().getConnection()){
@@ -66,7 +67,7 @@ public class AddressDAOImpl implements AddressDAO {
 
             List<Address> addresses = new ArrayList<>();
             while (resultSet.next()) {
-                int id = resultSet.getInt("ID");
+                int id = resultSet.getInt("ADDRESS_ID");
                 String city = resultSet.getString("CITY");
                 String district = resultSet.getString("DISTRICT");
                 String sub_district = resultSet.getString("SUB_DISTRICT");
@@ -82,5 +83,29 @@ public class AddressDAOImpl implements AddressDAO {
 
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public Address searchAddressByID(int id) {
+        try (Connection connection = DBUtil.getInstance().getConnection()) {
+            String sql = "SELECT * FROM ADDRESS WHERE ADDRESS_ID = " + id;
+
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()) {
+                String city = resultSet.getString("CITY");
+                String district = resultSet.getString("DISTRICT");
+                String sub_district = resultSet.getString("SUB_DISTRICT");
+                String postal_code = resultSet.getString("POSTAL_CODE");
+                float delivery_fee = resultSet.getFloat("DELIVERY_FEE");
+
+                Address address = new Address(id, city, district, sub_district, postal_code, delivery_fee);
+                return address;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

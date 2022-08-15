@@ -12,4 +12,6 @@ public interface AddressService {
     boolean delete(Address address);
 
     List<Address> findAll();
+
+    Address searchAddressByID(int id);
 }
