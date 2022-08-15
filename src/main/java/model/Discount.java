@@ -6,17 +6,15 @@ import java.util.Date;
 public class Discount {
     private int discountId;
     private String title;
-    private String type;
-    private float discount;
+    private int type;
+    private Double discount;
     private Date startDate;
     private Date endDate;
-
     public Discount(int id) {
         this.discountId = id;
     }
 
-
-    public Discount(String title, String type, float discount, Date startDate, Date endDate) {
+    public Discount(String title, int type, Double discount, Date startDate, Date endDate) {
         this.title = title;
         this.type = type;
         this.discount = discount;
@@ -24,7 +22,7 @@ public class Discount {
         this.endDate = endDate;
     }
 
-    public Discount(int discountId, String title, String type, float discount, Date startDate, Date endDate) {
+    public Discount(int discountId, String title, int type, Double discount, Date startDate, Date endDate) {
         this.discountId = discountId;
         this.title = title;
         this.type = type;
@@ -53,7 +51,7 @@ public class Discount {
         return discount;
     }
 
-    public void setDiscount(float discount) {
+    public void setDiscount(Double discount) {
         this.discount = discount;
     }
 
@@ -73,11 +71,11 @@ public class Discount {
         this.endDate = endDate;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

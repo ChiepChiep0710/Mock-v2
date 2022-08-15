@@ -3,7 +3,7 @@ package controller;
 import model.Discount;
 import service.DiscountService;
 import service.impl.DiscountServiceImpl;
-import util.DiscountValidator;
+import util.Validators.DiscountValidator;
 
 import java.util.List;
 import java.util.Scanner;
@@ -44,7 +44,11 @@ public class DiscountController {
                     List<Discount> discounts = discountService.findAllDiscount();
                     out.printf("%-20s%-20s%-20s%-20s%-20s%-20s\n", "ID", "TITLE", "TYPE", "DISCOUNT", "START DATE", "END DATE");
                     for (int i = 0; i < discounts.size(); i++) {
-                        out.printf("%-20s%-20s%-20s%-20.2f%-20s%-20s\n", discounts.get(i).getDiscountId(), discounts.get(i).getTitle(), discounts.get(i).getType(), discounts.get(i).getDiscount(), discounts.get(i).getStartDate(), discounts.get(i).getEndDate());
+                        if(discounts.get(i).getType() == 0) {
+                            out.printf("%-20s%-20s%-20s%-20.2f%-20s%-20s\n", discounts.get(i).getDiscountId(), discounts.get(i).getTitle(), "PERCENT", discounts.get(i).getDiscount(), discounts.get(i).getStartDate(), discounts.get(i).getEndDate());
+                        } else{
+                            out.printf("%-20s%-20s%-20s%-20.2f%-20s%-20s\n", discounts.get(i).getDiscountId(), discounts.get(i).getTitle(), "MONEY", discounts.get(i).getDiscount(), discounts.get(i).getStartDate(), discounts.get(i).getEndDate());
+                        }
                     }
                     break;
                 }
