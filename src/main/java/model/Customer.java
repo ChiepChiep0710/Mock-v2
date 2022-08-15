@@ -99,7 +99,6 @@ public class Customer {
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", addressId=" + addressId +
                 '}';
     }
 

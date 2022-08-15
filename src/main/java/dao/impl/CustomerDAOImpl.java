@@ -18,7 +18,7 @@ public class CustomerDAOImpl implements CustomerDAO {
         try(Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(CustomerSQLCommand.CUSTOMER_INSERT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, customer.getFullName(),
-                                customer.getEmail(), customer.getPhoneNumber(), customer.getAddressId());
+                                customer.getEmail(), customer.getPhoneNumber());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()){
@@ -59,7 +59,7 @@ public class CustomerDAOImpl implements CustomerDAO {
         try(Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(CustomerSQLCommand.CUSTOMER_UPDATE);
             preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, customer.getFullName(),
-                    customer.getEmail(), customer.getPhoneNumber(), customer.getAddressId(), customer.getId());
+                    customer.getEmail(), customer.getPhoneNumber(), customer.getId());
             if (preparedStatement != null){
                 return preparedStatement.executeUpdate();
             }
@@ -82,5 +82,27 @@ public class CustomerDAOImpl implements CustomerDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public Customer searchById(int customerId) {
+        try (Connection connection = DBUtil.getInstance().getConnection();) {
+            PreparedStatement preparedStatement = connection.prepareStatement(CustomerSQLCommand.CUSTOMER_SEARCH);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, customerId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Customer customer = new Customer();
+            while (resultSet.next()){
+                int id = resultSet.getInt("CUSTOMER_ID");
+                String fullName = resultSet.getString("FULL_NAME");
+                String email = resultSet.getString("EMAIL");
+                String phoneNumber = resultSet.getString("PHONE_NUMBER");
+                int addressId = resultSet.getInt("ADDRESS_ID");
+                customer =  new Customer(id, fullName, email, phoneNumber, addressId);
+            }
+            return customer;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
