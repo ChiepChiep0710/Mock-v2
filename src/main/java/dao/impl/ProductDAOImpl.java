@@ -163,5 +163,28 @@ public class ProductDAOImpl implements ProductDAO {
         }
         return null;
     }
+
+    @Override
+    public List<Product> findByMonth(int month) {
+        try (Connection connection = DBUtil.getInstance().getConnection();){
+            PreparedStatement preparedStatement = connection.prepareStatement(ProductSQLCOMMAND.PRODUCT_BY_MONTH);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, month);
+            if(preparedStatement != null){
+                ResultSet resultSet = preparedStatement.executeQuery();
+                List<Product> products = new ArrayList<>();
+                while (resultSet.next()){
+                    int id = resultSet.getInt("PRODUCT_ID");
+                    String name = resultSet.getString("NAME");
+                    int sumSold = resultSet.getInt("SUM_SOLD");
+
+                    products.add(new Product(id, name, sumSold));
+                }
+                return products;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }
 

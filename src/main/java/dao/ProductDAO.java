@@ -13,4 +13,6 @@ public interface ProductDAO {
     List<Product> findAll();
     int calculateDiscountPriceById(int productId);
     Product searchById(int productId);
+
+    List<Product> findByMonth(int month);
 }
