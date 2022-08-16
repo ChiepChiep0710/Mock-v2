@@ -75,4 +75,8 @@ public class OrderDetail {
                 ", productId=" + productId +
                 '}';
     }
+
+    public void display(){
+        System.out.printf("%-10d%-10d%-20.2f%-10d%-10d\n", cartId, quantity, total, orderId, productId);
+    }
 }
