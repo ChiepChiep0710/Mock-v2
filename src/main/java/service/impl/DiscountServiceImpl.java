@@ -18,7 +18,6 @@ public class DiscountServiceImpl implements DiscountService {
     private Scanner scanner = new Scanner(System.in);
     private static DiscountValidator validator = new DiscountValidator();
     private DiscountDAO discountDAO = new DiscountDAOImpl();
-
     @Override
     public boolean createDiscount() {
         System.out.println("CREATE DISCOUNT: ");
@@ -86,12 +85,10 @@ public class DiscountServiceImpl implements DiscountService {
         Discount discount = new Discount(title, type, dis, startDate, endDate);
         return discountDAO.createDiscount(discount) > 0;
     }
-
     @Override
     public List<Discount> findAllDiscount() {
         return discountDAO.findAllDiscount();
     }
-
     @Override
     public boolean deleteDiscount(int id) {
         List<Discount> discounts = findAllDiscount();
@@ -109,7 +106,6 @@ public class DiscountServiceImpl implements DiscountService {
         }
         return discountDAO.deleteDiscount(id) >0;
     }
-
     @Override
     public boolean updateDiscount(int id) {
         List<Discount> discounts = findAllDiscount();
@@ -209,5 +205,9 @@ public class DiscountServiceImpl implements DiscountService {
             res.setEndDate(endDate);
         }
         return discountDAO.updateDiscount(res) > 0;
+    }
+    @Override
+    public Discount searchById(int id) {
+        return discountDAO.searchById(id);
     }
 }
