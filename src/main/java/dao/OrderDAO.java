@@ -15,4 +15,6 @@ public interface OrderDAO {
     List<Order> findAll();
 
     Order searchById(int orderId);
+
+    List<Order> findByCustomerId(int customerId);
 }

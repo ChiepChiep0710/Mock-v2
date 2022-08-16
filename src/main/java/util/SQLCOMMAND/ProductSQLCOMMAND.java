@@ -16,4 +16,10 @@ public class ProductSQLCOMMAND {
             "\t\t\t\t\t\t\tEND\n" +
             "\t\t\t\t\t\tFROM PRODUCT p JOIN DISCOUNT d ON p.DISCOUNT_ID = d.DISCOUNT_ID)\n" +
             "WHERE PRODUCT_ID = ?";
+
+    public static final String PRODUCT_BY_MONTH = "SELECT p.PRODUCT_ID, p.NAME, SUM(p.SOLD) AS 'SUM_SOLD'\n" +
+            "FROM [ORDER] o JOIN ORDER_DETAIL od ON o.ORDER_ID = od.ORDER_ID\n" +
+            "JOIN PRODUCT p ON p.PRODUCT_ID = od.PRODUCT_ID\n" +
+            "WHERE DATEPART(MM, o.ORDER_DATE) = ?\n" +
+            "GROUP BY p.PRODUCT_ID, p.NAME";
 }

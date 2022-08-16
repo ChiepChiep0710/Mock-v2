@@ -14,7 +14,7 @@ public class Product {
     private Date Create_date;
     private int Status;
     private int discountId;
-
+    private int sumSold;
     public Product() {
     }
     public Product(int productId, String name, String description, Double price, Double discount_price, int stock, int sold, Date create_date, int status) {
@@ -62,6 +62,20 @@ public class Product {
         Create_date = create_date;
         Status = status;
         this.discountId = discountId;
+    }
+
+    public Product(int productId, String name, int sumSold) {
+        ProductId = productId;
+        Name = name;
+        this.sumSold = sumSold;
+    }
+
+    public int getSumSold() {
+        return sumSold;
+    }
+
+    public void setSumSold(int sumSold) {
+        this.sumSold = sumSold;
     }
 
     public int getProductId() {

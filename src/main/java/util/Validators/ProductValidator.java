@@ -46,4 +46,14 @@ public class ProductValidator {
             return validateDate();
         }
     }
+
+    public int validateMonth(){
+        int month = scanner.nextInt();
+        scanner.nextLine();
+        if(month > 0 && month < 13){
+            return month;
+        }
+        System.out.print("Month is not correct! Retype: ");
+        return validateMonth();
+    }
 }

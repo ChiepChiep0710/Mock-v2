@@ -1,9 +1,15 @@
 package service.impl;
 
 import dao.DiscountDAO;
+import dao.OrderDAO;
+import dao.OrderDetailDAO;
 import dao.ProductDAO;
 import dao.impl.DiscountDAOImpl;
+import dao.impl.OrderDAOImpl;
+import dao.impl.OrderDetailDAOImpl;
 import dao.impl.ProductDAOImpl;
+import model.Order;
+import model.OrderDetail;
 import model.Product;
 import service.ProductService;
 import util.Validators.DiscountValidator;
@@ -12,6 +18,7 @@ import util.Validators.ProductValidator;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -21,6 +28,8 @@ import static java.lang.System.out;
 public class ProductServiceImpl implements ProductService {
     private ProductDAO productDAO = new ProductDAOImpl();
     private DiscountDAO discountDAO = new DiscountDAOImpl();
+    private OrderDAO orderDAO = new OrderDAOImpl();
+    private OrderDetailDAO orderDetailDAO = new OrderDetailDAOImpl();
     private Scanner scanner = new Scanner(System.in);
     @Override
     public boolean create() {
@@ -157,5 +166,27 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product searchById(int productId) {
         return productDAO.searchById(productId);
+    }
+
+    @Override
+    public void findByCustomerId(int customerId) {
+        List<Order> orders = orderDAO.findByCustomerId(customerId);
+        if(orders == null){
+            out.println("Don't have order!");
+        }
+        out.printf("%-15s%-20s%-10s%-15s%-10s%-20s\n","PRODUCT_ID","NAME","PRICE","DISCOUNT_PRICE","QUANTITY","TOTAL");
+        for(int i = 0; i < orders.size(); i++){
+            List<OrderDetail> orderDetails = orderDetailDAO.findByOrderId(orders.get(i).getOrderID());
+            for(int j = 0; j < orderDetails.size(); j++){
+                Product product = productDAO.searchById(orderDetails.get(i).getProductId());
+                out.printf("%-15d%-20s%-10.2f%-15.2f%-10d%-20.2f\n", product.getProductId(), product.getName(), product.getPrice(),
+                        product.getDiscount_price(), orderDetails.get(i).getQuantity(), orderDetails.get(i).getTotal());
+            }
+        }
+    }
+
+    @Override
+    public List<Product> findByMonth(int month) {
+        return productDAO.findByMonth(month);
     }
 }
