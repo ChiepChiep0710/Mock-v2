@@ -82,13 +82,6 @@ public class Customer {
         email = CustomerValidator.getInstance().validateEmail();
         System.out.print("Enter phone number: ");
         phoneNumber = CustomerValidator.getInstance().validatePhone();
-//        Address address = new Address();
-//        address.input();
-//        addressId = Validator.getInstance().checkAddress(address);
-//        if(addressId == 0){
-//            AddressDAO addressDAO = new AddressDAOImpl();
-//            addressId = addressDAO.save(address);
-//        }
         return new Customer(fullName, email, phoneNumber);
     }
 
@@ -102,4 +95,7 @@ public class Customer {
                 '}';
     }
 
+    public void display(){
+        System.out.printf("%-10d%-30s%-20s%-20s\n", id, fullName, email, phoneNumber);
+    }
 }

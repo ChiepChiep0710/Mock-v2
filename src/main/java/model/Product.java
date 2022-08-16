@@ -159,4 +159,9 @@ public class Product {
                 ", discountId=" + discountId +
                 '}';
     }
+
+    public void display(){
+        System.out.printf("%-10d%-30s%-30s%-10.2f%-20.2f%-10d%-10d%-20s%-20s\n", ProductId, Name, Description,
+                Price, Discount_price, Stock, Sold, Create_date, (Status == 0 ? "Stocking" : "Out of stock"));
+    }
 }

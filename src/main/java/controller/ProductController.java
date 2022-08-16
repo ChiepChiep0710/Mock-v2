@@ -1,5 +1,6 @@
 package controller;
 
+import model.Product;
 import service.ProductService;
 import service.impl.ProductServiceImpl;
 
@@ -42,7 +43,9 @@ public class ProductController {
                     break;
                 }
                 case 4:{
-                    productService.findAll().forEach(System.out::println);
+                    System.out.printf("%-10s%-30s%-30s%-10s%-20s%-10s%-10s%-20s%-20s\n", "ID", "NAME", "DESCRIPTION",
+                            "PRICE", "DISCOUNT_PRICE", "STOCK", "SOLD", "CREATE_DATE", "STATUS");
+                    productService.findAll().forEach(Product::display);
                     break;
                 }
                 case 5:{

@@ -1,5 +1,6 @@
 package controller;
 
+import model.OrderDetail;
 import service.OrderDetailService;
 import service.impl.OrderDetailServiceImpl;
 
@@ -38,7 +39,8 @@ public class OrderDetailController {
                 case 4:{
                     System.out.print("Enter order id: ");
                     int id = scanner.nextInt();
-                    orderDetailService.findByOrderId(id).forEach(System.out::println);
+                    System.out.printf("%-10s%-10s%-20s%-10s%-10s\n", "CART_ID", "QUANTITY", "TOTAL", "ORDER_ID", "PRODUCT_ID");
+                    orderDetailService.findByOrderId(id).forEach(OrderDetail::display);
                     break;
                 }
                 case 5:{
@@ -58,7 +60,7 @@ public class OrderDetailController {
         System.out.println("1. Add a new order-detail");
         System.out.println("2. Update a order-detail by order-detail id");
         System.out.println("3. Delete a order-detail by order-detail id");
-        System.out.println("4. Show all order-detail");
+        System.out.println("4. Show all order-detail by order id");
         System.out.println("5. Exit");
         System.out.print("Your choice: ");
         int choice = scanner.nextInt();
