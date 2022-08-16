@@ -34,7 +34,6 @@ public class DiscountDAOImpl implements DiscountDAO {
             return new ArrayList<>();
         }
     }
-
     @Override
     public int createDiscount(Discount discount) {
         try(Connection connection = DBUtil.getInstance().getConnection()) {
@@ -54,7 +53,6 @@ public class DiscountDAOImpl implements DiscountDAO {
         }
         return 0;
     }
-
     @Override
     public int deleteDiscount(int id) {
         try (Connection connection = DBUtil.getInstance().getConnection();){
@@ -69,7 +67,6 @@ public class DiscountDAOImpl implements DiscountDAO {
         }
         return 0;
     }
-
     @Override
     public int updateDiscount(Discount discount) {
         try(Connection connection = DBUtil.getInstance().getConnection();){
@@ -82,6 +79,29 @@ public class DiscountDAOImpl implements DiscountDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+    @Override
+    public Discount searchById(int id) {
+        try (Connection connection = DBUtil.getInstance().getConnection();){
+            PreparedStatement preparedStatement = connection.prepareStatement(DiscountSQLCommand.DISCOUNT_SEARCH_BY_ID);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Discount discount = null;
+            while (resultSet.next()){
+                String title = resultSet.getString("TITLE");
+                int type = resultSet.getInt("TYPE");
+                Double dis = resultSet.getDouble("DISCOUNT");
+                Date startDate = resultSet.getDate("START_DATE");
+                Date endDate = resultSet.getDate("END_DATE");
+
+                discount = new Discount(id, title, type, dis, startDate, endDate);
+            }
+            return discount;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new Discount();
     }
 
 }

@@ -12,4 +12,6 @@ public interface DiscountService {
     boolean deleteDiscount(int id);
 
     boolean updateDiscount(int id);
+
+    Discount searchById(int id);
 }

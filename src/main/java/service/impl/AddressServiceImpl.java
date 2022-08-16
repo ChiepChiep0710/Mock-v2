@@ -9,7 +9,7 @@ import java.util.List;
 
 public class AddressServiceImpl implements AddressService {
 
-    private final AddressDAO addressDAO = new AddressDAOImpl();
+    private AddressDAO addressDAO = new AddressDAOImpl();
 
     @Override
     public boolean save(Address address) {
@@ -33,6 +33,6 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address searchAddressByID(int id) {
-        return addressDAO.searchAddressByID(id);
+        return null;
     }
 }

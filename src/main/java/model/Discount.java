@@ -14,6 +14,9 @@ public class Discount {
         this.discountId = id;
     }
 
+    public Discount() {
+    }
+
     public Discount(String title, int type, Double discount, Date startDate, Date endDate) {
         this.title = title;
         this.type = type;

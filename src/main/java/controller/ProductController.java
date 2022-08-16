@@ -1,5 +1,8 @@
 package controller;
 
+import service.ProductService;
+import service.impl.ProductServiceImpl;
+
 import java.util.Scanner;
 
 public class ProductController {
@@ -10,6 +13,7 @@ public class ProductController {
 //
 //    }
 
+    private static ProductService productService = new ProductServiceImpl();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void productController(){
@@ -19,19 +23,26 @@ public class ProductController {
             menu = showMenu();
             switch (menu){
                 case 1:{
-
+                    boolean result = productService.create();
+                    System.out.println("Create a new product " + (result ? "success" : "fail"));
                     break;
                 }
                 case 2:{
-
+                    System.out.print("Enter product id: ");
+                    int id = scanner.nextInt();
+                    boolean result = productService.update(id);
+                    System.out.println("Update product " + (result ? "success" : "fail"));
                     break;
                 }
                 case 3:{
-
+                    System.out.print("Enter product id: ");
+                    int id = scanner.nextInt();
+                    boolean result = productService.delete(id);
+                    System.out.println("Delete product " + (result ? "success" : "fail"));
                     break;
                 }
                 case 4:{
-
+                    productService.findAll().forEach(System.out::println);
                     break;
                 }
                 case 5:{

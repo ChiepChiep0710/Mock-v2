@@ -12,4 +12,6 @@ public interface DiscountDAO {
     int deleteDiscount(int id);
 
     int updateDiscount(Discount discount);
+
+    Discount searchById(int id);
 }
