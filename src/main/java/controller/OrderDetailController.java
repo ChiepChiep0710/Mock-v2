@@ -1,10 +1,13 @@
 package controller;
 
+import service.OrderDetailService;
+import service.impl.OrderDetailServiceImpl;
+
 import java.util.Scanner;
 
 public class OrderDetailController {
     private static Scanner scanner = new Scanner(System.in);
-
+    private static OrderDetailService orderDetailService = new OrderDetailServiceImpl();
     public static void orderDetailController(){
         int menu;
         boolean exit = true;
@@ -12,19 +15,30 @@ public class OrderDetailController {
             menu = showMenu();
             switch (menu){
                 case 1:{
-
+                    System.out.print("Enter order id: ");
+                    int id = scanner.nextInt();
+                    boolean result = orderDetailService.save(id);
+                    System.out.println("Create order-detail " + (result ? "success" : "fail"));
                     break;
                 }
                 case 2:{
-
+                    System.out.print("Enter cart id: ");
+                    int id = scanner.nextInt();
+                    boolean result = orderDetailService.update(id);
+                    System.out.println("Update order-detail " + (result ? "success" : "fail"));
                     break;
                 }
                 case 3:{
-
+                    System.out.print("Enter cart id: ");
+                    int id = scanner.nextInt();
+                    boolean result = orderDetailService.delete(id);
+                    System.out.println("Delete order-detail " + (result ? "success" : "fail"));
                     break;
                 }
                 case 4:{
-
+                    System.out.print("Enter order id: ");
+                    int id = scanner.nextInt();
+                    orderDetailService.findByOrderId(id).forEach(System.out::println);
                     break;
                 }
                 case 5:{

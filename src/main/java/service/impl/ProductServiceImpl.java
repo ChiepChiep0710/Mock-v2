@@ -58,10 +58,11 @@ public class ProductServiceImpl implements ProductService {
                 return false;
             } else{
                 out.println("Discount id not exists!");
+                product.setDiscount_price(product.getPrice());
                 return productDAO.createWithoutDiscount(product) > 0;
             }
         } else {
-            product.setDiscount_price(0.0);
+            product.setDiscount_price(product.getPrice());
             return productDAO.createWithoutDiscount(product) > 0;
         }
     }

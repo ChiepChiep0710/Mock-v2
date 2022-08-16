@@ -11,5 +11,8 @@ public interface OrderDAO {
     int update(Order order);
 
     int delete(Order order);
+
     List<Order> findAll();
+
+    Order searchById(int orderId);
 }
