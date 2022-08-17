@@ -16,8 +16,4 @@ public class OrderDetailValidator {
             return false;
         }
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> d893c3d46c5cfcaf3afa97c6a9ef6401a7b85a9b
 }
