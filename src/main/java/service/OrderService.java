@@ -5,13 +5,13 @@ import model.Order;
 import java.util.List;
 
 public interface OrderService {
+    boolean save();
 
-    boolean create(Order order);
-    boolean save(Order order);
+    boolean update();
 
-    boolean update(Order order);
-
-    boolean delete(Order order);
+    boolean delete();
 
     List<Order> findAll();
+
+    int check(String city, String district, String subDistrict);
 }

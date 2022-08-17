@@ -17,6 +17,14 @@ public class Order {
     public Order() {
     }
 
+    public Order(String name, String phoneNumber, String detailAddress, int customerID, int addressID) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.detailAddress = detailAddress;
+        this.customerID = customerID;
+        this.addressID = addressID;
+    }
+
     public Order(String name, String phoneNumber, String detailAddress, double total, Date orderDate, int status) {
         this.name = name;
         this.phoneNumber = phoneNumber;

@@ -13,4 +13,6 @@ public interface OrderDetailDAO {
     int delete(int cartId);
 
     List<OrderDetail> findByOrderId(int orderId);
+
+
 }
