@@ -1,9 +1,16 @@
 package controller;
 
+import model.Order;
+import service.OrderService;
+import service.impl.OrderServiceImpl;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class OrderController {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
+
+    private static final OrderService orderService = new OrderServiceImpl();
 
     public static void orderController(){
         int menu;
@@ -12,23 +19,32 @@ public class OrderController {
             menu = showMenu();
             switch (menu){
                 case 1:{
-
+                    boolean resultCreate = orderService.save();
+                    System.out.println("Create new order " + (resultCreate ? "success":"fail"));
                     break;
                 }
                 case 2:{
-
+                    boolean resultUpdate = orderService.update();
+                    System.out.println("Update new order " + (resultUpdate ? "success":"fail"));
                     break;
                 }
                 case 3:{
-
+                    boolean resultDelete = orderService.delete();
+                    System.out.println("Delete new order " + (resultDelete ? "success":"fail"));
                     break;
                 }
                 case 4:{
-
+                    List<Order> orderList = orderService.findAll();
+                    orderList.forEach(System.out::println);
                     break;
                 }
                 case 5:{
                     exit = false;
+                    break;
+                }
+                case 6:{
+                    int result = orderService.check("Ha Noi","Ha Dong","Mo Lao");
+                    System.out.println(result);
                     break;
                 }
                 default:{

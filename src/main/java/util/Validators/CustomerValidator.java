@@ -1,55 +1,20 @@
-package util;
+package util.Validators;
 
 import dao.CustomerDAO;
 import dao.impl.CustomerDAOImpl;
 import model.Customer;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class Validator {
-    private static Validator instance;
-    private static final Scanner scanner = new Scanner(System.in);
+public class CustomerValidator {
+    private static CustomerValidator instance;
+    private Scanner scanner = new Scanner(System.in);
 
-    public static Validator getInstance(){
-        return instance == null ? new Validator() : instance;
-    }
-
-    public int validateInteger(){
-        if (scanner.hasNextInt()){
-            int value = scanner.nextInt();
-            scanner.nextLine();
-
-            return value;
-        }
-
-        scanner.nextLine();
-        System.out.println("YOU MUST INPUT INTEGER TYPE");
-
-        return validateInteger();
-    }
-
-    public String validateString(){
-        return scanner.nextLine();
-    }
-
-    public double validateDouble(){
-        if (scanner.hasNextDouble()){
-            double value = scanner.nextDouble();
-            scanner.nextLine();
-
-            return value;
-        }
-
-        scanner.nextLine();
-        System.out.println("YOU MUST INPUT DOUBLE TYPE");
-
-        return validateDouble();
+    public static CustomerValidator getInstance(){
+        return instance == null ? new CustomerValidator() : instance;
     }
 
     public String validatePostalCode(){
@@ -61,7 +26,18 @@ public class Validator {
         return validatePostalCode();
     }
 
-
+//    public Double checkPostalCode(String postalCode){
+//        AddressDAO addressDAO = new AddressDAOImpl();
+//        List<Address> addresses = addressDAO.findAll();
+//        List<Address> addressFilter = addresses.stream()
+//                .filter(address -> address.getPostalCode().equals(postalCode))
+//                .collect(Collectors.toList());
+//        if(addressFilter.size() != 0){
+//            return addressFilter.get(0).getDeliveryFee();
+//        } else{
+//            return 0.0;
+//        }
+//    }
 
     public String validateEmail(){
         String email = scanner.nextLine();
@@ -92,17 +68,18 @@ public class Validator {
         return validatePhone();
     }
 
-    public Date validateDate(){
-        System.out.print("Input date: ");
-        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-        try {
-            Date date = df.parse(scanner.nextLine());
-            return date;
-        } catch (ParseException e) {
-            System.out.print("You must type mm-dd-yyyy! Retype date: ");
-            return validateDate();
-        }
-    }
+//    public int checkAddress(Address address){
+//        AddressDAO addressDAO = new AddressDAOImpl();
+//        List<Address> addresses = addressDAO.findAll();
+//        List<Address> addressFilter = addresses.stream()
+//                .filter(add -> add.getPostalCode().equals(address.getPostalCode()))
+//                .collect(Collectors.toList());
+//        if(addressFilter.size() != 0){
+//            return addressFilter.get(0).getId();
+//        } else{
+//            return 0;
+//        }
+//    }
 
     public boolean checkDateDiscount(Date date1, Date date2){
         if(date2.compareTo(date1) >= 0){
@@ -111,5 +88,4 @@ public class Validator {
             return false;
         }
     }
-
 }

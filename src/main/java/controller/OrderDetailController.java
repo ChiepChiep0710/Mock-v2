@@ -1,10 +1,14 @@
 package controller;
 
+import model.OrderDetail;
+import service.OrderDetailService;
+import service.impl.OrderDetailServiceImpl;
+
 import java.util.Scanner;
 
 public class OrderDetailController {
     private static Scanner scanner = new Scanner(System.in);
-
+    private static OrderDetailService orderDetailService = new OrderDetailServiceImpl();
     public static void orderDetailController(){
         int menu;
         boolean exit = true;
@@ -12,19 +16,31 @@ public class OrderDetailController {
             menu = showMenu();
             switch (menu){
                 case 1:{
-
+                    System.out.print("Enter order id: ");
+                    int id = scanner.nextInt();
+                    boolean result = orderDetailService.save(id);
+                    System.out.println("Create order-detail " + (result ? "success" : "fail"));
                     break;
                 }
                 case 2:{
-
+                    System.out.print("Enter cart id: ");
+                    int id = scanner.nextInt();
+                    boolean result = orderDetailService.update(id);
+                    System.out.println("Update order-detail " + (result ? "success" : "fail"));
                     break;
                 }
                 case 3:{
-
+                    System.out.print("Enter cart id: ");
+                    int id = scanner.nextInt();
+                    boolean result = orderDetailService.delete(id);
+                    System.out.println("Delete order-detail " + (result ? "success" : "fail"));
                     break;
                 }
                 case 4:{
-
+                    System.out.print("Enter order id: ");
+                    int id = scanner.nextInt();
+                    System.out.printf("%-10s%-10s%-20s%-10s%-10s\n", "CART_ID", "QUANTITY", "TOTAL", "ORDER_ID", "PRODUCT_ID");
+                    orderDetailService.findByOrderId(id).forEach(OrderDetail::display);
                     break;
                 }
                 case 5:{
@@ -44,7 +60,7 @@ public class OrderDetailController {
         System.out.println("1. Add a new order-detail");
         System.out.println("2. Update a order-detail by order-detail id");
         System.out.println("3. Delete a order-detail by order-detail id");
-        System.out.println("4. Show all order-detail");
+        System.out.println("4. Show all order-detail by order id");
         System.out.println("5. Exit");
         System.out.print("Your choice: ");
         int choice = scanner.nextInt();

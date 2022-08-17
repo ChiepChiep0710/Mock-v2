@@ -6,7 +6,4 @@ public class AddressSQLCommand {
     public static final String UPDATE_ADDRESS = "UPDATE ADDRESS SET CITY = ?, DISTRICT = ?, SUB_DISTRICT = ?," +
             " POSTAL_CODE = ?, DELIVERY_FEE = ? WHERE ADDRESS_ID = ?";
     public static final String DELETE_ADDRESS = "DELETE FROM ADDRESS WHERE ADDRESS_ID = ?";
-
-    public static final String SEARCH_ADDRESS_BY_ID = "SELECT * FROM ADDRESS WHERE ADDRESS_ID = ?";
-
 }

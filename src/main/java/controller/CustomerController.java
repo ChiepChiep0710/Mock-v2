@@ -40,11 +40,13 @@ public class CustomerController {
                     int id = scanner.nextInt();
                     scanner.nextLine();
                     Customer customer = customerService.searchById(id);
-                    System.out.println(customer.toString());
+                    System.out.printf("%-10s%-30s%-20s%-20s\n", "ID", "FULL_NAME", "EMAIL", "PHONE_NUMBER");
+                    customer.display();
                     break;
                 }
                 case 5:{
-                    customerService.findAll().forEach(System.out::println);
+                    System.out.printf("%-10s%-30s%-20s%-20s\n", "ID", "FULL_NAME", "EMAIL", "PHONE_NUMBER");
+                    customerService.findAll().forEach(Customer::display);
                     break;
                 }
                 case 6:{
