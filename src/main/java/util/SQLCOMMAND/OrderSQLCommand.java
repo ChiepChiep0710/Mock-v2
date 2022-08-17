@@ -9,7 +9,7 @@ public class OrderSQLCommand {
 
     public static final String CHECK_CUSTOMER = "SELECT * FROM CUSTOMER WHERE FULL_NAME = ?";
 
-    public static final String CHECK_ADDRESS = "SELECT * FROM ADDRESS WHERE CITY = ? AND DISTRICT  = ? AND SUB_DISTRICT = ?";
+    public static final String CHECK_ADDRESS = "SELECT * FROM ADDRESS WHERE SUB_DISTRICT = ?";
 
     public static final String GET_TOTAL = "SELECT * FROM TOTAL_ORDER WHERE CUSTOMER_ID = ?";
 

@@ -5,7 +5,6 @@ import model.Product;
 import util.DBUtil;
 import util.SQLCOMMAND.ProductSQLCOMMAND;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -4,9 +4,12 @@ import dao.CustomerDAO;
 import dao.impl.CustomerDAOImpl;
 import model.Customer;
 
+<<<<<<< HEAD
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+=======
+>>>>>>> d893c3d46c5cfcaf3afa97c6a9ef6401a7b85a9b
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;

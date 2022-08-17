@@ -12,6 +12,7 @@ import model.Order;
 import model.OrderDetail;
 import model.Product;
 import service.ProductService;
+<<<<<<< HEAD
 import util.Validators.DiscountValidator;
 import util.Validators.ProductValidator;
 
@@ -20,6 +21,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+=======
+import util.Validators.ProductValidator;
+
+>>>>>>> d893c3d46c5cfcaf3afa97c6a9ef6401a7b85a9b
 import java.util.List;
 import java.util.Scanner;
 

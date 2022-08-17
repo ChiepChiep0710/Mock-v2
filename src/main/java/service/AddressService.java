@@ -5,13 +5,13 @@ import model.Address;
 import java.util.List;
 
 public interface AddressService {
-    boolean save(Address address);
+    boolean save();
 
-    boolean update(Address address);
+    boolean update();
 
-    boolean delete(Address address);
+    boolean delete();
 
     List<Address> findAll();
 
-    Address searchAddressByID(int id);
+    Address searchAddressByID(int addressID);
 }
