@@ -49,7 +49,6 @@ public class AddressController {
             }
         }
     }
-
     public static int showMenu(){
         System.out.println("==========ADDRESS MANAGEMENT=============");
         System.out.println("1. Add a new address");
