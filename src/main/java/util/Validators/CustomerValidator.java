@@ -4,9 +4,6 @@ import dao.CustomerDAO;
 import dao.impl.CustomerDAOImpl;
 import model.Customer;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -28,19 +25,6 @@ public class CustomerValidator {
         System.out.print("Retype postal code: ");
         return validatePostalCode();
     }
-
-//    public Double checkPostalCode(String postalCode){
-//        AddressDAO addressDAO = new AddressDAOImpl();
-//        List<Address> addresses = addressDAO.findAll();
-//        List<Address> addressFilter = addresses.stream()
-//                .filter(address -> address.getPostalCode().equals(postalCode))
-//                .collect(Collectors.toList());
-//        if(addressFilter.size() != 0){
-//            return addressFilter.get(0).getDeliveryFee();
-//        } else{
-//            return 0.0;
-//        }
-//    }
 
     public String validateEmail(){
         String email = scanner.nextLine();

@@ -1,9 +1,16 @@
 package controller;
 
+import model.Address;
+import service.AddressService;
+import service.impl.AddressServiceImpl;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class AddressController {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
+
+    private static final AddressService addressService = new AddressServiceImpl();
 
     public static void addressController(){
         int menu;
@@ -12,19 +19,23 @@ public class AddressController {
             menu = showMenu();
             switch (menu){
                 case 1:{
-
+                    boolean resultCreate = addressService.save();
+                    System.out.println("Create new address " + (resultCreate ? "success":"fail"));
                     break;
                 }
                 case 2:{
-
+                    boolean resultUpdate =addressService.update();
+                    System.out.println("Update address " + (resultUpdate ? "success":"fail"));
                     break;
                 }
                 case 3:{
-
+                    boolean resultDelete = addressService.delete();
+                    System.out.println("Delete address " + (resultDelete ? "success":"fail"));
                     break;
                 }
                 case 4:{
-
+                    List<Address> addressList = addressService.findAll();
+                    addressList.forEach(System.out::println);
                     break;
                 }
                 case 5:{

@@ -175,35 +175,6 @@ public class OrderDAOImpl implements OrderDAO {
         }
     }
 
-    @Override
-    public Order searchById(int orderId) {
-        try (Connection connection = DBUtil.getInstance().getConnection();){
-            PreparedStatement preparedStatement = connection.prepareStatement(OrderSQLCommand.ORDER_SEARCH_BY_ID);
-            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, orderId);
-            Order order = null;
-            if(preparedStatement != null){
-                ResultSet resultSet = preparedStatement.executeQuery();
-                while(resultSet.next()){
-                    String name = resultSet.getString("NAME");
-                    String phoneNumber = resultSet.getString("PHONE_NUMBER");
-                    String detailAddress = resultSet.getString("DETAIL_ADDRESS");
-                    double total = resultSet.getDouble("TOTAL");
-                    Date orderDate = resultSet.getDate("ORDER_DATE");
-                    int customerID = resultSet.getInt("CUSTOMER_ID");
-                    int addressID = resultSet.getInt("ADDRESS_ID");
-                    int status = resultSet.getInt("STATUS");
-
-                    order = new Order(orderId, name, phoneNumber, detailAddress, total, orderDate, customerID, addressID, status);
-                }
-                return order;
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
     public List<Order> findByCustomerId(int customerId) {
         try (Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(OrderSQLCommand.ORDER_SEARCH_BY_CUSTOMER_ID);
