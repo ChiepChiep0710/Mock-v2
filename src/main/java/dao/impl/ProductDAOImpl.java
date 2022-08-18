@@ -35,7 +35,7 @@ public class ProductDAOImpl implements ProductDAO {
         try(Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(ProductSQLCOMMAND.PRODUCT_INSERT_WITH_DISCOUNT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, product.getName(), product.getDescription(),
-                    product.getPrice(), product.getStock(), product.getSold(), product.getCreate_date(), product.getDiscountId());
+                    product.getPrice(), product.getStock(), product.getSold(), product.getCreate_date(), product.getStatus(), product.getDiscountId());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()){

@@ -61,7 +61,7 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
         try (Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(OrderDetailSQLCommand.ORDER_DETAIL_UPDATE);
             preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, orderDetail.getQuantity(),
-                    orderDetail.getTotal());
+                    orderDetail.getTotal(),orderDetail.getCartId());
             if(preparedStatement != null){
                 return preparedStatement.executeUpdate();
             }

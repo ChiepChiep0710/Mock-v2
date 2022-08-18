@@ -15,9 +15,16 @@ import service.OrderDetailService;
 import service.OrderService;
 import util.Validator;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
+import util.Validators.DiscountValidator;
+
+import static java.lang.System.out;
 
 public class OrderServiceImpl implements OrderService {
 
@@ -31,6 +38,10 @@ public class OrderServiceImpl implements OrderService {
 
     private static final OrderDetailService orderDetailService = new OrderDetailServiceImpl();
 
+    private static final DiscountValidator validator = new DiscountValidator();
+
+    private static final Scanner scanner = new Scanner(System.in);
+
     @Override
     public boolean save() {
         System.out.println("-----Enter order information------");
@@ -41,18 +52,15 @@ public class OrderServiceImpl implements OrderService {
         String choice;
         List<Order> orders = orderDAO.findAll();
         int orderID = orders.get(orders.size()-1).getOrderID()+1;
+        double deliveryFee= address.getDelivery_fee();
         do{
-            orderDetailService.save(orderID);
+            orderDetailService.save(orderID,order.getOrderDate());
             System.out.println("Do you want continue ?  Y/N");
             choice = Validator.getInstance().validateString();
         }while ("Y".equalsIgnoreCase(choice));
-        double deliveryFee= address.getDelivery_fee();
-        double total = getTotal(orderID)-deliveryFee;
-        Calendar calendar = Calendar.getInstance();
-        java.util.Date orderDate = calendar.getTime();
+        double total = getTotal(orderID,deliveryFee);;
         int status = 0;
         order.setTotal(total);
-        order.setOrderDate(orderDate);
         order.setStatus(status);
         return orderDAO.save(order) > 0;
     }
@@ -76,7 +84,25 @@ public class OrderServiceImpl implements OrderService {
             List<Address> addressList = addressService.findAll();
             addressID = addressList.get(addressList.size()-1).getId();
         }
-        return new Order(customer.getFullName(),phoneNumber,detailAddress,customerID,addressID);
+        String format = "dd/MM/yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        Date orderDate = null;
+        while (true) {
+            System.out.println("+ Enter order date");
+            String day1 = scanner.nextLine();
+            boolean isvalid = validator.dateValidator(day1);
+            if (isvalid) {
+                try {
+                    orderDate = dateFormat.parse(day1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                break;
+            } else {
+                out.println("Invalid order Date requires re-entry!");
+            }
+        }
+        return new Order(customer.getFullName(),phoneNumber,detailAddress, orderDate,customerID,addressID);
     }
 
     @Override
@@ -84,13 +110,13 @@ public class OrderServiceImpl implements OrderService {
         return orderDAO.check(city,district,subDistrict);
     }
 
-    private double getTotal(int orderID) {
+    private double getTotal(int orderID, double deliveryFee) {
         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderID);
         double total = 0;
         for (int i = 0; i < orderDetails.size(); i++) {
             total += orderDetails.get(i).getTotal();
         }
-        return total;
+        return total+deliveryFee;
     }
 
 
@@ -120,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
             System.out.println("+ " + args[i] + " ? Y/N" );
             choice = Validator.getInstance().validateString();
             if ("Y".equalsIgnoreCase(choice)){
-                System.out.print("Enter " + args[i] +" :");
+                System.out.println("Enter " + args[i] +" :");
                 switch (i){
                     case 0:
                         int customerID = Validator.getInstance().validateInteger();
@@ -131,9 +157,27 @@ public class OrderServiceImpl implements OrderService {
                         order.setPhoneNumber(phoneNumber);
                         break;
                     case 1:
-                        System.out.println("Enter order detail id:");
-                        int cartID = Validator.getInstance().validateInteger();
-                        orderDetailService.update(cartID);
+                        List<OrderDetail> orderDetailList = orderDetailService.findByOrderId(order.getOrderID());
+                        orderDetailList.forEach(out::println);
+                        String choice1 ;
+                        do{
+                            int choice2;
+                            out.println("You want to add or update ? (1:add,2:update)" );
+                            choice2 = Validator.getInstance().validateInteger();
+                            if (choice2 == 1){
+                                orderDetailService.save(order.getOrderID(),order.getOrderDate());
+                            }
+                            else if (choice2 == 2){
+                                System.out.println("Enter order detail id:");
+                                int cartID = Validator.getInstance().validateInteger();
+                                orderDetailService.update(cartID);
+                            }
+                            else {
+                                out.println("You must type 1 or 2!");
+                            }
+                            System.out.println("You want to continue ? Y/N");
+                            choice1 = Validator.getInstance().validateString();
+                        }while ("y".equalsIgnoreCase(choice1));
                         break;
                     case 2:
                         System.out.println("+ Enter city:");
@@ -144,10 +188,15 @@ public class OrderServiceImpl implements OrderService {
                         String subDistrict = Validator.getInstance().validateString();
                         String detailAddress = subDistrict + ", " + district + ", " + city;
                         int addressID = check(city,district,subDistrict);
+                        if (addressID == 0){
+                            addressService.save();
+                            List<Address> addressList = addressService.findAll();
+                            addressID = addressList.get(addressList.size()-1).getId();
+                        }
                         order.setAddressID(addressID);
                         order.setDetailAddress(detailAddress);
                         Address address = addressService.searchAddressByID(addressID);
-                        double total = getTotal(order.getOrderID())+address.getDelivery_fee();
+                        double total = getTotal(order.getOrderID(),address.getDelivery_fee());
                         order.setTotal(total);
                         break;
                 }

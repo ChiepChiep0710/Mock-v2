@@ -17,10 +17,11 @@ public class Order {
     public Order() {
     }
 
-    public Order(String name, String phoneNumber, String detailAddress, int customerID, int addressID) {
+    public Order(String name, String phoneNumber, String detailAddress, Date orderDate, int customerID, int addressID) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.detailAddress = detailAddress;
+        this.orderDate = orderDate;
         this.customerID = customerID;
         this.addressID = addressID;
     }

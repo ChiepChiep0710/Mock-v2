@@ -16,6 +16,7 @@ import service.OrderDetailService;
 import util.Validators.OrderDetailValidator;
 import util.Validators.ProductValidator;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,8 +27,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private DiscountDAO discountDAO = new DiscountDAOImpl();
     private Scanner scanner = new Scanner(System.in);
     @Override
-    public boolean save(int orderId) {
-        Order order = orderDAO.searchById(orderId);
+    public boolean save(int orderId, Date orderDate) {
         System.out.print("Enter product id: ");
         int productId = scanner.nextInt();
         scanner.nextLine();
@@ -51,7 +51,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         if(discount == null){
             total = product.getPrice() * quantity;
         } else{
-            if(OrderDetailValidator.getInstance().checkDateDiscount(order.getOrderDate(), discount.getStartDate(), discount.getEndDate())){
+            if(OrderDetailValidator.getInstance().checkDateDiscount(orderDate, discount.getStartDate(), discount.getEndDate())){
                 total = product.getDiscount_price() *  quantity;
             } else {
                 total = product.getPrice() * quantity;

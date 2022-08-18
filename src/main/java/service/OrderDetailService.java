@@ -2,10 +2,11 @@ package service;
 
 import model.OrderDetail;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrderDetailService {
-    boolean save(int orderId);
+    boolean save(int orderId, Date orderDate);
 
     boolean update(int cartId);
 

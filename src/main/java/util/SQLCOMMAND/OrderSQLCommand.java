@@ -16,4 +16,6 @@ public class OrderSQLCommand {
     public static final String SEARCH_CUSTOMER_BY_ID = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID = ?";
     public static final String ORDER_SEARCH_BY_ID = "SELECT * FROM [ORDER] WHERE ORDER_ID = ?";
     public static final String ORDER_SEARCH_BY_CUSTOMER_ID = "SELECT * FROM [ORDER] WHERE CUSTOMER_ID = ?";
+
+    public static final String UPDATE_TOTAL = "UPDATE [ORDER] SET TOTAL = ? WHERE ORDER_ID = ?";
 }

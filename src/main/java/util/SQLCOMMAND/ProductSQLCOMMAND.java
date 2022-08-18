@@ -8,13 +8,22 @@ public class ProductSQLCOMMAND {
     public static final String PRODUCT_DELETE = "DELETE FROM PRODUCT WHERE PRODUCT_ID = ?";
     public static final String PRODUCT_SELECT = "SELECT * FROM PRODUCT";
     public static final String PRODUCT_SEARCH_BY_ID = "SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?";
+//    public static final String PRODUCT_CAL_DISCOUNT_PRICE = "UPDATE PRODUCT\n" +
+//            "SET DISCOUNT_PRICE =\t(SELECT CASE \n" +
+//            "\t\t\t\t\t\t\t\tWHEN TYPE = 0 THEN p.PRICE* ( 1- d.DISCOUNT/100)\n" +
+//            "\t\t\t\t\t\t\t\tWHEN TYPE = 1 THEN p.PRICE - d.DISCOUNT\n" +
+//            "\t\t\t\t\t\t\t\tELSE 0\n" +
+//            "\t\t\t\t\t\t\tEND\n" +
+//            "\t\t\t\t\t\tFROM PRODUCT p JOIN DISCOUNT d ON p.DISCOUNT_ID = d.DISCOUNT_ID)\n" +
+//            "WHERE PRODUCT_ID = ?";
+
     public static final String PRODUCT_CAL_DISCOUNT_PRICE = "UPDATE PRODUCT\n" +
-            "SET DISCOUNT_PRICE =\t(SELECT CASE \n" +
-            "\t\t\t\t\t\t\t\tWHEN TYPE = 0 THEN p.PRICE* ( 1- d.DISCOUNT/100)\n" +
-            "\t\t\t\t\t\t\t\tWHEN TYPE = 1 THEN p.PRICE - d.DISCOUNT\n" +
-            "\t\t\t\t\t\t\t\tELSE 0\n" +
-            "\t\t\t\t\t\t\tEND\n" +
-            "\t\t\t\t\t\tFROM PRODUCT p JOIN DISCOUNT d ON p.DISCOUNT_ID = d.DISCOUNT_ID)\n" +
+            "SET DISCOUNT_PRICE = CASE \n" +
+            "WHEN TYPE = 0 THEN p.PRICE* ( 1- d.DISCOUNT/100)\n" +
+            "WHEN TYPE = 1 THEN p.PRICE - d.DISCOUNT\n" +
+            "ELSE 0\n" +
+            "END\n" +
+            "FROM PRODUCT p JOIN DISCOUNT d ON p.DISCOUNT_ID = d.DISCOUNT_ID\n" +
             "WHERE PRODUCT_ID = ?";
 
     public static final String PRODUCT_BY_MONTH = "SELECT p.PRODUCT_ID, p.NAME, SUM(p.SOLD) AS 'SUM_SOLD'\n" +
