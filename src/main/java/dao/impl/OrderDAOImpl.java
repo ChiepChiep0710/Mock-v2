@@ -163,4 +163,23 @@ public class OrderDAOImpl implements OrderDAO {
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public Double calculateTotalByMonth(int month) {
+        try (Connection connection = DBUtil.getInstance().getConnection();){
+            PreparedStatement preparedStatement = connection.prepareStatement(OrderSQLCommand.ORDER_TOTAL_BY_MONTH);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, month);
+            if(preparedStatement != null){
+                ResultSet resultSet = preparedStatement.executeQuery();
+                Double sum = 0.0;
+                while (resultSet.next()){
+                    sum = resultSet.getDouble(1);
+                }
+                return sum;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 }

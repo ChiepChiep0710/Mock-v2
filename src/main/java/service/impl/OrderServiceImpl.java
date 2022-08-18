@@ -84,6 +84,11 @@ public class OrderServiceImpl implements OrderService {
         return orderDAO.check(city,district,subDistrict);
     }
 
+    @Override
+    public Double calculateTotalByMonth(int month) {
+        return orderDAO.calculateTotalByMonth(month);
+    }
+
     private double getTotal(int orderID) {
         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderID);
         double total = 0;

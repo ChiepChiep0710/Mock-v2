@@ -18,4 +18,6 @@ public interface OrderDAO {
     int check(String city, String district, String subDistrict);
 
     List<Order> findByCustomerId(int customerId);
+
+    Double calculateTotalByMonth(int month);
 }
