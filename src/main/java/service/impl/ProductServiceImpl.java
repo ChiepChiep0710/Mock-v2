@@ -183,4 +183,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findByMonth(int month) {
         return productDAO.findByMonth(month);
     }
+
+    @Override
+    public List<Product> showTop() {
+        return productDAO.showTop();
+    }
 }

@@ -185,5 +185,33 @@ public class ProductDAOImpl implements ProductDAO {
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public List<Product> showTop() {
+        try (Connection connection = DBUtil.getInstance().getConnection();){
+            PreparedStatement preparedStatement = connection.prepareStatement(ProductSQLCOMMAND.PRODUCT_TOP);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Product> products = new ArrayList<>();
+            while (resultSet.next()){
+                int id = resultSet.getInt("PRODUCT_ID");
+                String name = resultSet.getString("NAME");
+                String description = resultSet.getString("DESCRIPTION");
+                Double price= resultSet.getDouble("PRICE");
+                Double discount_price= resultSet.getDouble("DISCOUNT_PRICE");
+                int stock= resultSet.getInt("STOCK");
+                int sold= resultSet.getInt("SOLD");
+                Date create_date = resultSet.getDate("CREATE_DATE");
+                int status= resultSet.getInt("STATUS");
+                int discountId = resultSet.getInt("DISCOUNT_ID");
+
+                products.add(new Product(id, name, description, price, discount_price, stock, sold, create_date, status, discountId));
+            }
+            return products;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }
 

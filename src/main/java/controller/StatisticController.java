@@ -1,7 +1,9 @@
 package controller;
 
 import model.Product;
+import service.OrderService;
 import service.ProductService;
+import service.impl.OrderServiceImpl;
 import service.impl.ProductServiceImpl;
 import util.Validators.ProductValidator;
 
@@ -11,6 +13,7 @@ import java.util.Scanner;
 public class StatisticController {
     private static Scanner scanner = new Scanner(System.in);
     private static ProductService productService = new ProductServiceImpl();
+    private static OrderService orderService = new OrderServiceImpl();
 
     public static void statisticController(){
         int menu;
@@ -36,11 +39,15 @@ public class StatisticController {
                     break;
                 }
                 case 3:{
-
+                    System.out.print("Enter month: ");
+                    int month = ProductValidator.getInstance().validateMonth();
+                    System.out.println("TOTAL: " + orderService.calculateTotalByMonth(month));
                     break;
                 }
                 case 4:{
-
+                    System.out.printf("%-10s%-30s%-30s%-10s%-20s%-10s%-10s%-20s%-20s\n", "ID", "NAME", "DESCRIPTION",
+                            "PRICE", "DISCOUNT_PRICE", "STOCK", "SOLD", "CREATE_DATE", "STATUS");
+                    productService.showTop().forEach(Product::display);
                     break;
                 }
                 case 5:{

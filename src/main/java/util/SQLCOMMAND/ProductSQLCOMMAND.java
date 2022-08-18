@@ -22,4 +22,6 @@ public class ProductSQLCOMMAND {
             "JOIN PRODUCT p ON p.PRODUCT_ID = od.PRODUCT_ID\n" +
             "WHERE DATEPART(MM, o.ORDER_DATE) = ?\n" +
             "GROUP BY p.PRODUCT_ID, p.NAME";
+
+    public static final String PRODUCT_TOP = "SELECT TOP 10 * FROM PRODUCT ORDER BY SOLD DESC";
 }
