@@ -85,6 +85,10 @@ public class ProductServiceImpl implements ProductService {
             out.println("Product not exists!");
             return false;
         }
+        if(productDAO.searchById(productId).getStatus() == 0){
+            out.println("The product is out of stock");
+            return false;
+        }
         Product product = productDAO.searchById(productId);
         String isChange;
         out.print("Do you want to change product name?(y/n)");
@@ -172,15 +176,20 @@ public class ProductServiceImpl implements ProductService {
         for(int i = 0; i < orders.size(); i++){
             List<OrderDetail> orderDetails = orderDetailDAO.findByOrderId(orders.get(i).getOrderID());
             for(int j = 0; j < orderDetails.size(); j++){
-                Product product = productDAO.searchById(orderDetails.get(i).getProductId());
+                Product product = productDAO.searchById(orderDetails.get(j).getProductId());
                 out.printf("%-15d%-20s%-10.2f%-15.2f%-10d%-20.2f\n", product.getProductId(), product.getName(), product.getPrice(),
-                        product.getDiscount_price(), orderDetails.get(i).getQuantity(), orderDetails.get(i).getTotal());
+                        product.getDiscount_price(), orderDetails.get(j).getQuantity(), orderDetails.get(j).getTotal());
             }
         }
     }
 
     @Override
-    public List<Product> findByMonth(int month) {
-        return productDAO.findByMonth(month);
+    public List<Product> findByMonth(int month, int year) {
+        return productDAO.findByMonth(month, year);
+    }
+
+    @Override
+    public List<Product> showTop() {
+        return productDAO.showTop();
     }
 }

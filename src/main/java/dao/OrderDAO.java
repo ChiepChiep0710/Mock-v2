@@ -1,6 +1,7 @@
 package dao;
 
 import model.Order;
+import model.Product;
 
 import java.util.List;
 
@@ -20,5 +21,9 @@ public interface OrderDAO {
     List<Order> findByCustomerId(int customerId);
 
     int updateTotal(int orderID, double total);
+
+    List<Product> findProByOrderId(int orderId);
+
+    List<Order> calculateTotalByMonth(int year);
 }
 

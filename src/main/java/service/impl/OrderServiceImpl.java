@@ -110,6 +110,11 @@ public class OrderServiceImpl implements OrderService {
         return orderDAO.check(city,district,subDistrict);
     }
 
+    @Override
+    public List<Order> calculateTotalByMonth(int year) {
+        return orderDAO.calculateTotalByMonth(year);
+    }
+
     private double getTotal(int orderID, double deliveryFee) {
         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderID);
         double total = 0;
@@ -118,8 +123,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return total+deliveryFee;
     }
-
-
 
     @Override
     public boolean update() {

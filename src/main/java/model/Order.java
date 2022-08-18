@@ -9,11 +9,11 @@ public class Order {
     private String detailAddress;
     private double total;
     private Date orderDate;
-
     private int status;
     private int customerID;
     private int addressID;
-
+    private int month;
+    private Double sumTotal;
     public Order() {
     }
 
@@ -56,6 +56,27 @@ public class Order {
         this.status = status;
         this.customerID = customerID;
         this.addressID = addressID;
+    }
+
+    public Order(int month, Double sumTotal) {
+        this.month = month;
+        this.sumTotal = sumTotal;
+    }
+
+    public Double getSumTotal() {
+        return sumTotal;
+    }
+
+    public void setSumTotal(Double sumTotal) {
+        this.sumTotal = sumTotal;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
     }
 
     public int getOrderID() {

@@ -19,6 +19,7 @@ import util.Validators.ProductValidator;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class OrderDetailServiceImpl implements OrderDetailService {
     private OrderDetailDAO orderDetailDAO = new OrderDetailDAOImpl();
@@ -32,33 +33,73 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         int productId = scanner.nextInt();
         scanner.nextLine();
         Product product = productDAO.searchById(productId);
-        if(product == null || product.getStock() == 0){
+        if(product == null){
             System.out.println("Product not exists!");
             return false;
         }
-        System.out.print("Enter quantity: ");
-        int quantity = ProductValidator.getInstance().validateInteger();
-        while(quantity > product.getStock()){
-            System.out.println("Quantity more than stock! Retype: ");
-            quantity = ProductValidator.getInstance().validateInteger();
+        if(product.getStatus() == 0){
+            System.out.println("The product is out of stock!");
+            return false;
         }
-        product.setStock(product.getStock() - quantity);
-        product.setSold(product.getSold() + quantity);
-        productDAO.update(product);
+        OrderDetail orderDetail = new OrderDetail();
 
-        Double total = 0.0;
-        Discount discount = discountDAO.searchById(product.getDiscountId());
-        if(discount == null){
-            total = product.getPrice() * quantity;
-        } else{
-            if(OrderDetailValidator.getInstance().checkDateDiscount(orderDate, discount.getStartDate(), discount.getEndDate())){
-                total = product.getDiscount_price() *  quantity;
-            } else {
-                total = product.getPrice() * quantity;
+        List<Product> products = orderDAO.findProByOrderId(orderId);
+        List<Product> productFilter = products.stream()
+                        .filter(product1 -> product1.getProductId() == productId)
+                                .collect(Collectors.toList());
+        if(productFilter.size() == 0){
+            System.out.print("Enter quantity: ");
+            int quantity = ProductValidator.getInstance().validateInteger();
+            while(quantity > product.getStock()){
+                System.out.println("Quantity more than stock! Retype: ");
+                quantity = ProductValidator.getInstance().validateInteger();
+                orderDetail.setQuantity(quantity);
             }
+            product.setStock(product.getStock() - quantity);
+            product.setSold(product.getSold() + quantity);
+            productDAO.update(product);
+
+            Double total = 0.0;
+            Discount discount = discountDAO.searchById(product.getDiscountId());
+            if(discount == null){
+                total = product.getPrice() * quantity;
+            } else{
+                if(OrderDetailValidator.getInstance().checkDateDiscount(orderDate, discount.getStartDate(), discount.getEndDate())){
+                    total = product.getDiscount_price() *  quantity;
+                } else {
+                    total = product.getPrice() * quantity;
+                }
+            }
+            orderDetail.setTotal(total);
+            return orderDetailDAO.save(orderDetail) > 0;
+        } else {
+            System.out.print("Enter quantity: ");
+            int quantity = ProductValidator.getInstance().validateInteger();
+            orderDetail = searchById(productFilter.get(0).getCartId());
+            quantity += orderDetail.getQuantity();
+            while(quantity > product.getStock()){
+                System.out.println("Quantity more than stock! Retype: ");
+                quantity = ProductValidator.getInstance().validateInteger();
+            }
+            orderDetail.setQuantity(quantity);
+            product.setStock(product.getStock() - quantity);
+            product.setSold(product.getSold() + quantity);
+            productDAO.update(product);
+
+            Double total = 0.0;
+            Discount discount = discountDAO.searchById(product.getDiscountId());
+            if(discount == null){
+                total = product.getPrice() * quantity;
+            } else{
+                if(OrderDetailValidator.getInstance().checkDateDiscount(orderDate, discount.getStartDate(), discount.getEndDate())){
+                    total = product.getDiscount_price() *  quantity;
+                } else {
+                    total = product.getPrice() * quantity;
+                }
+            }
+            orderDetail.setTotal(total);
+            return orderDetailDAO.update(orderDetail) > 0;
         }
-        OrderDetail orderDetail = new OrderDetail(quantity, total, orderId, productId);
-        return orderDetailDAO.save(orderDetail) > 0;
     }
 
     @Override

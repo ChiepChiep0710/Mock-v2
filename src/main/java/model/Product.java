@@ -14,6 +14,7 @@ public class Product {
     private int Status;
     private int discountId;
     private int sumSold;
+    private int cartId;
     public Product() {
     }
     public Product(int productId, String name, String description, Double price, Double discount_price, int stock, int sold, Date create_date, int status) {
@@ -38,6 +39,21 @@ public class Product {
         Create_date = create_date;
         Status = status;
         this.discountId = discountId;
+    }
+
+    public Product(int productId, String name, String description, Double price, Double discount_price, int stock, int sold, Date create_date, int status, int discountId, int cartId) {
+        ProductId = productId;
+        Name = name;
+        Description = description;
+        Price = price;
+        Discount_price = discount_price;
+        Stock = stock;
+        Sold = sold;
+        Create_date = create_date;
+        Status = status;
+        this.discountId = discountId;
+        this.sumSold = sumSold;
+        this.cartId = cartId;
     }
 
     public Product(String name, String description, Double price, Double discount_price, int stock, int sold, Date create_date, int status) {
@@ -67,6 +83,15 @@ public class Product {
         ProductId = productId;
         Name = name;
         this.sumSold = sumSold;
+    }
+
+
+    public int getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
     }
 
     public int getSumSold() {
@@ -175,6 +200,6 @@ public class Product {
 
     public void display(){
         System.out.printf("%-10d%-30s%-30s%-10.2f%-20.2f%-10d%-10d%-20s%-20s\n", ProductId, Name, Description,
-                Price, Discount_price, Stock, Sold, Create_date, (Status == 0 ? "Stocking" : "Out of stock"));
+                Price, Discount_price, Stock, Sold, Create_date, (Status != 0 ? "Stocking" : "Out of stock"));
     }
 }

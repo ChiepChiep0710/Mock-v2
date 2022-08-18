@@ -16,6 +16,11 @@ public class OrderSQLCommand {
     public static final String SEARCH_CUSTOMER_BY_ID = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID = ?";
     public static final String ORDER_SEARCH_BY_ID = "SELECT * FROM [ORDER] WHERE ORDER_ID = ?";
     public static final String ORDER_SEARCH_BY_CUSTOMER_ID = "SELECT * FROM [ORDER] WHERE CUSTOMER_ID = ?";
-
     public static final String UPDATE_TOTAL = "UPDATE [ORDER] SET TOTAL = ? WHERE ORDER_ID = ?";
+    public static final String ORDER_TOTAL_BY_YEAR = "SELECT DATEPART(MM, ORDER_DATE), SUM(TOTAL)\n" +
+            "FROM [ORDER] \n" +
+            "WHERE DATEPART(YYYY, ORDER_DATE) = ?\n" +
+            "GROUP BY DATEPART(MM, ORDER_DATE)\n" +
+            "ORDER BY DATEPART(MM, ORDER_DATE)";
+    public static final String PRODUCT_SEARCH_BY_ORDER_ID = "SELECT p.*, o.CART_ID FROM PRODUCT p JOIN ORDER_DETAIL o ON p.PRODUCT_ID = o.PRODUCT_ID WHERE o.ORDER_ID = ?";
 }

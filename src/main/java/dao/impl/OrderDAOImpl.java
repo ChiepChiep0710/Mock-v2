@@ -2,6 +2,7 @@ package dao.impl;
 
 import dao.OrderDAO;
 import model.Order;
+import model.Product;
 import util.DBUtil;
 import util.SQLCOMMAND.OrderSQLCommand;
 
@@ -177,5 +178,57 @@ public class OrderDAOImpl implements OrderDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public List<Product> findProByOrderId(int orderId) {
+        try (Connection connection = DBUtil.getInstance().getConnection();){
+            PreparedStatement preparedStatement = connection.prepareStatement(OrderSQLCommand.PRODUCT_SEARCH_BY_ORDER_ID);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, orderId);
+            if(preparedStatement != null){
+                ResultSet resultSet = preparedStatement.executeQuery();
+                List<Product> products = new ArrayList<>();
+                while (resultSet.next()){
+                    int id = resultSet.getInt("PRODUCT_ID");
+                    String name = resultSet.getString("NAME");
+                    String description = resultSet.getString("DESCRIPTION");
+                    Double price= resultSet.getDouble("PRICE");
+                    Double discount_price= resultSet.getDouble("DISCOUNT_PRICE");
+                    int stock= resultSet.getInt("STOCK");
+                    int sold= resultSet.getInt("SOLD");
+                    Date create_date = resultSet.getDate("CREATE_DATE");
+                    int status= resultSet.getInt("STATUS");
+                    int discountId = resultSet.getInt("DISCOUNT_ID");
+                    int cartId = resultSet.getInt("CART_ID");
+
+                    products.add(new Product(id, name, description, price, discount_price, stock, sold, create_date, status, discountId, cartId));
+                }
+                return products;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Order> calculateTotalByMonth(int year) {
+        try (Connection connection = DBUtil.getInstance().getConnection();){
+            PreparedStatement preparedStatement = connection.prepareStatement(OrderSQLCommand.ORDER_TOTAL_BY_YEAR);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, year);
+            if(preparedStatement != null){
+                ResultSet resultSet = preparedStatement.executeQuery();
+                List<Order> sumTotals = new ArrayList<>();
+                while (resultSet.next()){
+                    int month = resultSet.getInt(1);
+                    Double sum = resultSet.getDouble(2);
+                    sumTotals.add(new Order(month, sum));
+                }
+                return sumTotals;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

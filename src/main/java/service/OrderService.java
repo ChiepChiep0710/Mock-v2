@@ -15,4 +15,5 @@ public interface OrderService {
 
     int check(String city, String district, String subDistrict);
 
+    List<Order> calculateTotalByMonth(int year);
 }

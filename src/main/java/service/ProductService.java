@@ -17,5 +17,7 @@ public interface ProductService {
 
     void findByCustomerId(int customerId);
 
-    List<Product> findByMonth(int month);
+    List<Product> findByMonth(int month, int year);
+
+    List<Product> showTop();
 }

@@ -15,7 +15,8 @@ public class ProductDAOImpl implements ProductDAO {
         try(Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(ProductSQLCOMMAND.PRODUCT_INSERT_WITHOUT_DISCOUNT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, product.getName(), product.getDescription(),
-                    product.getPrice(), product.getDiscount_price(), product.getStock(), product.getSold(), product.getCreate_date());
+                    product.getPrice(), product.getDiscount_price(), product.getStock(), product.getSold(), product.getCreate_date(),
+                    product.getStatus());
             if(preparedStatement != null){
                 preparedStatement.executeUpdate();
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -35,7 +36,8 @@ public class ProductDAOImpl implements ProductDAO {
         try(Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(ProductSQLCOMMAND.PRODUCT_INSERT_WITH_DISCOUNT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, product.getName(), product.getDescription(),
-                    product.getPrice(), product.getStock(), product.getSold(), product.getCreate_date(), product.getStatus(), product.getDiscountId());
+                    product.getPrice(), product.getStock(), product.getSold(), product.getCreate_date(), product.getStatus(),
+                    product.getDiscountId());
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()){
@@ -164,10 +166,10 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public List<Product> findByMonth(int month) {
+    public List<Product> findByMonth(int month, int year) {
         try (Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(ProductSQLCOMMAND.PRODUCT_BY_MONTH);
-            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, month);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, month, year);
             if(preparedStatement != null){
                 ResultSet resultSet = preparedStatement.executeQuery();
                 List<Product> products = new ArrayList<>();
@@ -180,6 +182,34 @@ public class ProductDAOImpl implements ProductDAO {
                 }
                 return products;
             }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Product> showTop() {
+        try (Connection connection = DBUtil.getInstance().getConnection();){
+            PreparedStatement preparedStatement = connection.prepareStatement(ProductSQLCOMMAND.PRODUCT_TOP);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Product> products = new ArrayList<>();
+            while (resultSet.next()){
+                int id = resultSet.getInt("PRODUCT_ID");
+                String name = resultSet.getString("NAME");
+                String description = resultSet.getString("DESCRIPTION");
+                Double price= resultSet.getDouble("PRICE");
+                Double discount_price= resultSet.getDouble("DISCOUNT_PRICE");
+                int stock= resultSet.getInt("STOCK");
+                int sold= resultSet.getInt("SOLD");
+                Date create_date = resultSet.getDate("CREATE_DATE");
+                int status= resultSet.getInt("STATUS");
+                int discountId = resultSet.getInt("DISCOUNT_ID");
+
+                products.add(new Product(id, name, description, price, discount_price, stock, sold, create_date, status, discountId));
+            }
+            return products;
         } catch (Exception e){
             e.printStackTrace();
         }

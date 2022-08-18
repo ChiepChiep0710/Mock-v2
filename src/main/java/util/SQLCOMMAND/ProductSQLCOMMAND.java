@@ -8,14 +8,6 @@ public class ProductSQLCOMMAND {
     public static final String PRODUCT_DELETE = "DELETE FROM PRODUCT WHERE PRODUCT_ID = ?";
     public static final String PRODUCT_SELECT = "SELECT * FROM PRODUCT";
     public static final String PRODUCT_SEARCH_BY_ID = "SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?";
-//    public static final String PRODUCT_CAL_DISCOUNT_PRICE = "UPDATE PRODUCT\n" +
-//            "SET DISCOUNT_PRICE =\t(SELECT CASE \n" +
-//            "\t\t\t\t\t\t\t\tWHEN TYPE = 0 THEN p.PRICE* ( 1- d.DISCOUNT/100)\n" +
-//            "\t\t\t\t\t\t\t\tWHEN TYPE = 1 THEN p.PRICE - d.DISCOUNT\n" +
-//            "\t\t\t\t\t\t\t\tELSE 0\n" +
-//            "\t\t\t\t\t\t\tEND\n" +
-//            "\t\t\t\t\t\tFROM PRODUCT p JOIN DISCOUNT d ON p.DISCOUNT_ID = d.DISCOUNT_ID)\n" +
-//            "WHERE PRODUCT_ID = ?";
 
     public static final String PRODUCT_CAL_DISCOUNT_PRICE = "UPDATE PRODUCT\n" +
             "SET DISCOUNT_PRICE = CASE \n" +
@@ -29,6 +21,8 @@ public class ProductSQLCOMMAND {
     public static final String PRODUCT_BY_MONTH = "SELECT p.PRODUCT_ID, p.NAME, SUM(p.SOLD) AS 'SUM_SOLD'\n" +
             "FROM [ORDER] o JOIN ORDER_DETAIL od ON o.ORDER_ID = od.ORDER_ID\n" +
             "JOIN PRODUCT p ON p.PRODUCT_ID = od.PRODUCT_ID\n" +
-            "WHERE DATEPART(MM, o.ORDER_DATE) = ?\n" +
+            "WHERE DATEPART(MM, o.ORDER_DATE) = ? AND DATEPART(YYYY, o.ORDER_DATE) = ?\n" +
             "GROUP BY p.PRODUCT_ID, p.NAME";
+
+    public static final String PRODUCT_TOP = "SELECT TOP 10 * FROM PRODUCT ORDER BY SOLD DESC";
 }
