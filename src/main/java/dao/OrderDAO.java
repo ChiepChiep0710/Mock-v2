@@ -22,6 +22,8 @@ public interface OrderDAO {
 
     int getTotal(int orderID);
 
+    int updateTotal(int orderID, double total);
+
     Map<Integer,Double> calculateTotalByMonth(int year);
 }
 

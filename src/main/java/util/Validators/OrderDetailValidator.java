@@ -17,4 +17,12 @@ public class OrderDetailValidator {
         }
     }
 
+    public boolean checkDateProduct(Date dateOrder, Date dateProduct){
+        if(dateOrder.compareTo(dateProduct) >= 0 ){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
 }

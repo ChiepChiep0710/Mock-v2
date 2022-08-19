@@ -17,15 +17,15 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public boolean save() {
         System.out.println("----Input address information------");
-        System.out.println("Enter city:");
+        System.out.print("Enter city: ");
         String city = Validator.getInstance().validateString();
-        System.out.println("Enter district:");
+        System.out.print("Enter district: ");
         String district = Validator.getInstance().validateString();
-        System.out.println("Enter sub district:");
+        System.out.print("Enter sub district: ");
         String subDistrict = Validator.getInstance().validateString();
-        System.out.println("Enter postal code:");
+        System.out.print("Enter postal code: ");
         String postalCode = AddressValidator.getInstance().validatePostalCode();
-        System.out.println("Enter delivery fee:");
+        System.out.print("Enter delivery fee: ");
         double deliveryFee = Validator.getInstance().validateDouble();
         Address address = new Address(city, district, subDistrict, postalCode, deliveryFee);
         return addressDAO.save(address) > 0;
@@ -34,7 +34,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public boolean update() {
         System.out.println("-----Update address-----");
-        System.out.print("Enter address id:");
+        System.out.print("Enter address id: ");
         int addressID = Validator.getInstance().validateInteger();
         List<Address> addresses = findAll();
         List<Address> addressList = addresses.stream()
@@ -56,7 +56,7 @@ public class AddressServiceImpl implements AddressService {
             System.out.println("+ " + args[i] + " ? Y/N" );
             choice = Validator.getInstance().validateString();
             if ("Y".equalsIgnoreCase(choice)){
-                System.out.print("Enter " + args[i] +" :");
+                System.out.print("Enter " + args[i] +" : ");
                 switch (i){
                     case 0:
                         address.setCity(Validator.getInstance().validateString());
@@ -82,7 +82,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public boolean delete() {
         System.out.println("-----Delete address-----");
-        System.out.print("Enter address id:");
+        System.out.print("Enter address id: ");
         int addressID = Validator.getInstance().validateInteger();
         List<Address> addresses = findAll();
         List<Address> addressList = addresses.stream()

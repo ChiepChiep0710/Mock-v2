@@ -89,6 +89,6 @@ public class Address {
     }
 
     public void display(){
-        System.out.printf("%-20s%-20s%-20s%-20s%-20s%-20s\n",id,city,district,sub_district,postal_code,delivery_fee);
+        System.out.printf("%-20d%-20s%-20s%-20s%-20d%-20.2f\n",id,city,district,sub_district,postal_code,delivery_fee);
     }
 }

@@ -61,6 +61,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                 total = product.getPrice() * quantity;
             }
         }
+        if (!OrderDetailValidator.getInstance().checkDateProduct(orderDate,product.getCreate_date())){
+            System.out.println("Order date is less than create date product!");
+            return false;
+        }
         OrderDetail orderDetail = new OrderDetail(quantity, total, orderId, productId);
         return orderDetailDAO.save(orderDetail) > 0;
     }

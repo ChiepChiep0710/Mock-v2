@@ -6,10 +6,7 @@ import dao.ProductDAO;
 import dao.impl.CustomerDAOImpl;
 import dao.impl.OrderDAOImpl;
 import dao.impl.ProductDAOImpl;
-import model.Address;
-import model.Customer;
-import model.Order;
-import model.OrderDetail;
+import model.*;
 import service.AddressService;
 import service.OrderDetailService;
 import service.OrderService;
@@ -18,10 +15,7 @@ import util.Validators.DiscountValidator;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.System.out;
@@ -46,65 +40,53 @@ public class OrderServiceImpl implements OrderService {
     public boolean save() {
         System.out.println("-----Enter order information------");
         Order order = orderInput();
-        int addressID = order.getAddressID();
-        Address address = addressService.searchAddressByID(addressID);
-        System.out.println("-----Enter order detail:");
-        String choice;
-        List<Order> orders = orderDAO.findAll();
-        int orderID;
-        if (orders.size() == 0 ){
-            orderID = 1;
-        } else {
-            orderID = orders.get(orders.size()-1).getOrderID()+1;
+        boolean result = orderDAO.save(order) > 0;
+        if (result == false ) {
+            out.println("Create order fail");
+            return false;
         }
-        double deliveryFee= address.getDelivery_fee();
+        List<Order> orders = orderDAO.findAll();
+        int orderID  = orders.get(orders.size()-1).getOrderID();
+        boolean check = true;
+        String choice;
+        System.out.println("-----Enter order detail:");
         do{
-            orderDetailService.save(orderID,order.getOrderDate());
+            check = orderDetailService.save(orderID,order.getOrderDate());
+            if (check = false) {
+                out.println("Create order detail fail");
+            }
             System.out.println("Do you want continue ?  Y/N");
             choice = Validator.getInstance().validateString();
         }while ("Y".equalsIgnoreCase(choice));
-        double total = orderDAO.getTotal(orderID)+deliveryFee;;
+        int addressID = order.getAddressID();
+        Address address = addressService.searchAddressByID(addressID);
+        double deliveryFee= address.getDelivery_fee();
+        double total = orderDAO.getTotal(orderID)+deliveryFee;
         order.setTotal(total);
-        return orderDAO.save(order) > 0;
+        boolean resultUpdateTotal = orderDAO.updateTotal(orderID,total) > 0;
+        if (resultUpdateTotal == false){
+            out.println("Update total fail!");
+            result = false;
+        }
+        return result;
     }
 
     private Order orderInput(){
-        System.out.println("Enter customer id:");
+        System.out.print("Enter customer id: ");
         int customerID = Validator.getInstance().validateInteger();
         Customer customer = customerDAO.searchById(customerID);
         String phoneNumber= customer.getPhoneNumber();
-        System.out.println("Enter address:");
-        System.out.println("+ Enter city:");
-        String city = Validator.getInstance().validateString();
-        System.out.println("+ Enter district:");
-        String district = Validator.getInstance().validateString();
-        System.out.println("+ Enter subDistrict:");
-        String subDistrict = Validator.getInstance().validateString();
-        String detailAddress = subDistrict + ", " + district + ", " + city;
-        int addressID = check(city,district,subDistrict);
-        if (addressID == 0){
-            addressService.save();
-            List<Address> addressList = addressService.findAll();
-            addressID = addressList.get(addressList.size()-1).getId();
+        int addressID = 0;
+        String detailAddress = null;
+        while (addressID == 0){
+            List<String> detailAddressList = detailAddressInput();
+            String city = detailAddressList.get(0);
+            String district = detailAddressList.get(1);
+            String subDistrict = detailAddressList.get(2);
+            detailAddress = subDistrict + ", " + district + ", " + city;
+            addressID = Integer.parseInt(detailAddressList.get(3));
         }
-        String format = "dd/MM/yyyy";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-        Date orderDate = null;
-        while (true) {
-            System.out.println("+ Enter order date");
-            String day1 = scanner.nextLine();
-            boolean isvalid = validator.dateValidator(day1);
-            if (isvalid) {
-                try {
-                    orderDate = dateFormat.parse(day1);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                break;
-            } else {
-                out.println("Invalid order Date requires re-entry!");
-            }
-        }
+        Date orderDate = dateInput();
         return new Order(customer.getFullName(),phoneNumber,detailAddress, orderDate,customerID,addressID);
     }
 
@@ -132,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean update() {
         System.out.println("-----Update order-----");
-        System.out.println("Enter order ID:");
+        System.out.print("Enter order ID: ");
         int orderID = Validator.getInstance().validateInteger();
         List<Order> orders = findAll();
         List<Order> orderList = orders.stream()
@@ -154,58 +136,16 @@ public class OrderServiceImpl implements OrderService {
             System.out.println("+ " + args[i] + " ? Y/N" );
             choice = Validator.getInstance().validateString();
             if ("Y".equalsIgnoreCase(choice)){
-                System.out.println("Enter " + args[i] +" :");
+                System.out.print("Enter " + args[i] +" : ");
                 switch (i){
                     case 0:
-                        int customerID = Validator.getInstance().validateInteger();
-                        Customer customer = customerDAO.searchById(customerID);
-                        String name = customer.getFullName();
-                        String phoneNumber = customer.getPhoneNumber();
-                        order.setName(name);
-                        order.setPhoneNumber(phoneNumber);
+                        order = updateChoiceCustomer(order);
                         break;
                     case 1:
-                        List<OrderDetail> orderDetailList = orderDetailService.findByOrderId(order.getOrderID());
-                        orderDetailList.forEach(out::println);
-                        String choice1 ;
-                        do{
-                            int choice2;
-                            out.println("You want to add or update ? (1:add,2:update)" );
-                            choice2 = Validator.getInstance().validateInteger();
-                            if (choice2 == 1){
-                                orderDetailService.save(order.getOrderID(),order.getOrderDate());
-                            }
-                            else if (choice2 == 2){
-                                System.out.println("Enter order detail id:");
-                                int cartID = Validator.getInstance().validateInteger();
-                                orderDetailService.update(cartID);
-                            }
-                            else {
-                                out.println("You must type 1 or 2!");
-                            }
-                            System.out.println("You want to continue ? Y/N");
-                            choice1 = Validator.getInstance().validateString();
-                        }while ("y".equalsIgnoreCase(choice1));
+                        updateChoiceOrderDetail(order);
                         break;
                     case 2:
-                        System.out.println("+ Enter city:");
-                        String city = Validator.getInstance().validateString();
-                        System.out.println("+ Enter district:");
-                        String district = Validator.getInstance().validateString();
-                        System.out.println("+ Enter subDistrict:");
-                        String subDistrict = Validator.getInstance().validateString();
-                        String detailAddress = subDistrict + ", " + district + ", " + city;
-                        int addressID = check(city,district,subDistrict);
-                        if (addressID == 0){
-                            addressService.save();
-                            List<Address> addressList = addressService.findAll();
-                            addressID = addressList.get(addressList.size()-1).getId();
-                        }
-                        order.setAddressID(addressID);
-                        order.setDetailAddress(detailAddress);
-                        Address address = addressService.searchAddressByID(addressID);
-                        double total = orderDAO.getTotal(order.getOrderID())+address.getDelivery_fee();
-                        order.setTotal(total);
+                        order = updateChoiceAddress(order);
                         break;
                 }
             }
@@ -216,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean delete() {
         System.out.println("-----Delete order-----");
-        System.out.print("Enter order id:");
+        System.out.print("Enter order id: ");
         int orderID = Validator.getInstance().validateInteger();
         List<Order> orders = findAll();
         List<Order> orderList = orders.stream()
@@ -232,6 +172,122 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAll() {
+        List<Order> orderList = orderDAO.findAll();
+        out.println("----------List order----------");
+        for (Order order : orderList){
+            out.println("Order id: " + order.getOrderID());
+            out.println("Customer:\t\t\t " + order.getName());
+            out.println("Phone number:\t\t " + order.getPhoneNumber());
+            out.println("Detail address:\t\t " + order.getDetailAddress());
+            out.println("Order date:\t\t\t " + order.getOrderDate());
+            out.println("Total:\t\t\t\t " + order.getTotal());
+            out.println("");
+            List<OrderDetail> orderDetailList = orderDetailService.findByOrderId(order.getOrderID());
+            out.printf("%-20s%-20s%-20s%-20s\n","Product","Price","Quantity","Total");
+            for (OrderDetail orderDetail : orderDetailList){
+                Product product = productDAO.searchById(orderDetail.getProductId());
+                out.printf("%-20s%-20.2f%-20d%-20.2f\n",product.getName(),product.getDiscount_price(),orderDetail.getQuantity(),orderDetail.getTotal());
+            }
+        }
         return orderDAO.findAll();
+    }
+
+    public Date dateInput(){
+        String format = "dd/MM/yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        Date orderDate = null;
+        while (true) {
+            System.out.print("+ Enter order date: ");
+            String day1 = scanner.nextLine();
+            boolean isvalid = validator.dateValidator(day1);
+            if (isvalid) {
+                try {
+                    orderDate = dateFormat.parse(day1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                break;
+            } else {
+                out.println("Invalid order Date requires re-entry!");
+            }
+        }
+        return orderDate;
+    }
+
+    public List<String> detailAddressInput(){
+        List<String> list = new ArrayList<>();
+        System.out.println("Enter address: ");
+        System.out.print("+ Enter city: ");
+        String city = Validator.getInstance().validateString();
+        System.out.print("+ Enter district: ");
+        String district = Validator.getInstance().validateString();
+        System.out.print("+ Enter subDistrict: ");
+        String subDistrict = Validator.getInstance().validateString();
+        list.add(city);
+        list.add(district);
+        list.add(subDistrict);
+        int addressID = check(city,district,subDistrict);
+        if (addressID == 0){
+            out.println("You want to create new address ? Y/N");
+            String choice = Validator.getInstance().validateString();
+            if ("y".equalsIgnoreCase(choice)){
+                addressService.save();
+                List<Address> addressList = addressService.findAll();
+                addressID = addressList.get(addressList.size()-1).getId();
+            }
+        }
+        list.add(String.valueOf(addressID));
+        return list;
+    }
+
+    public void updateChoiceOrderDetail(Order order){
+        List<OrderDetail> orderDetailList = orderDetailService.findByOrderId(order.getOrderID());
+        orderDetailList.forEach(out::println);
+        String choice1 ;
+        do{
+            int choice2;
+            out.println("You want to add or update ? (1:add,2:update)" );
+            choice2 = Validator.getInstance().validateInteger();
+            if (choice2 == 1){
+                orderDetailService.save(order.getOrderID(),order.getOrderDate());
+            }
+            else if (choice2 == 2){
+                System.out.print("Enter order detail id: ");
+                int cartID = Validator.getInstance().validateInteger();
+
+                orderDetailService.update(cartID);
+            }
+            else {
+                out.println("You must type 1 or 2!");
+            }
+            System.out.println("You want to continue ? Y/N");
+            choice1 = Validator.getInstance().validateString();
+        }while ("y".equalsIgnoreCase(choice1));
+
+    }
+
+    public Order updateChoiceAddress(Order order){
+        List<String> detailAddressList = detailAddressInput();
+        String city = detailAddressList.get(0);
+        String district = detailAddressList.get(1);
+        String subDistrict = detailAddressList.get(2);
+        String detailAddress = subDistrict + ", " + district + ", " + city;
+        int addressID = Integer.parseInt(detailAddressList.get(3));
+        order.setAddressID(addressID);
+        order.setDetailAddress(detailAddress);
+        Address address = addressService.searchAddressByID(addressID);
+        double total = orderDAO.getTotal(order.getOrderID())+address.getDelivery_fee();
+        order.setTotal(total);
+        return order;
+    }
+
+    public Order updateChoiceCustomer(Order order){
+        int customerID = Validator.getInstance().validateInteger();
+        Customer customer = customerDAO.searchById(customerID);
+        String name = customer.getFullName();
+        String phoneNumber = customer.getPhoneNumber();
+        order.setName(name);
+        order.setPhoneNumber(phoneNumber);
+        return order;
     }
 }

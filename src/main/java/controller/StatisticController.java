@@ -46,8 +46,13 @@ public class StatisticController {
                     scanner.nextLine();
                     Map<Integer,Double> sumTotal = orderService.calculateTotalByMonth(year);
                     System.out.printf("%-20s%-20s\n", "MONTH", "SUM_REVENUE");
-                    for(int i = 0; i < sumTotal.size(); i++){
-                        System.out.printf("%-20d%-20.2f\n", i, sumTotal.get(i));
+                    for(int i = 1; i < 12; i++){
+                        if (sumTotal.get(i)==null){
+                            System.out.printf("%-20d%-20d\n", i, 0);
+                        }else {
+                            System.out.printf("%-20d%-20.2f\n", i, sumTotal.get(i));
+                        }
+
                     }
                     break;
                 }

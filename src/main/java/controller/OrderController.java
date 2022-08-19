@@ -34,11 +34,7 @@ public class OrderController {
                     break;
                 }
                 case 4:{
-                    List<Order> orderList = orderService.findAll();
-                    System.out.printf("%-20s%-20s%-20s%-40s%-20s%-20s%-20s%-20s\n","ID","NAME","PHONE NUMBER","DETAIL ADDRESS",
-                            "TOTAL","ORDER DATE","CUSTOMER ID","ADDRESS ID");
-                    orderList.forEach(System.out::println);
-
+                    orderService.findAll();
                     break;
                 }
                 case 5:{

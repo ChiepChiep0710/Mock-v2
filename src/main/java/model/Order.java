@@ -132,7 +132,7 @@ public class Order {
     }
 
     public void display(){
-        System.out.printf("%-20s%-20s%-20s%-40s%-20s%-20s%-20s%-20s\n",orderID,name,phoneNumber,detailAddress,total,orderDate,
+        System.out.printf("%-20d%-20s%-20s%-40s%-20.2f%-20s%-20d%-20d\n",orderID,name,phoneNumber,detailAddress,total,orderDate,
                 customerID,addressID);
     }
 }

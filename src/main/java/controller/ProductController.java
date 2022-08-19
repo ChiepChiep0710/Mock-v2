@@ -43,7 +43,7 @@ public class ProductController {
                     break;
                 }
                 case 4:{
-                    System.out.printf("%-10s%-30s%-30s%-10s%-20s%-10s%-10s%-20s%-20s\n", "ID", "NAME", "DESCRIPTION",
+                    System.out.printf("%-10s%-20s%-30s%-20s%-20s%-10s%-10s%-20s%-20s\n", "ID", "NAME", "DESCRIPTION",
                             "PRICE", "DISCOUNT_PRICE", "STOCK", "SOLD", "CREATE_DATE", "STATUS");
                     productService.findAll().forEach(Product::display);
                     break;

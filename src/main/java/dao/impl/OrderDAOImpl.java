@@ -187,6 +187,20 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
+    public int updateTotal(int orderID, double total) {
+        try(Connection connection = DBUtil.getInstance().getConnection()){
+            PreparedStatement preparedStatement = connection.prepareStatement(OrderSQLCommand.UPDATE_TOTAL);
+            preparedStatement = DBUtil.getInstance().statementBinding(preparedStatement, total,orderID);
+
+            return preparedStatement.executeUpdate();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
     public Map<Integer,Double> calculateTotalByMonth(int year) {
         try (Connection connection = DBUtil.getInstance().getConnection();){
             PreparedStatement preparedStatement = connection.prepareStatement(OrderSQLCommand.ORDER_TOTAL_BY_YEAR);
