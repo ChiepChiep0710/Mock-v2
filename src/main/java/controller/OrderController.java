@@ -38,12 +38,15 @@ public class OrderController {
                     break;
                 }
                 case 5:{
-                    exit = false;
+                    orderService.searchById();
                     break;
                 }
                 case 6:{
-                    int result = orderService.check("Ha Noi","Ha Dong","Mo Lao");
-                    System.out.println(result);
+                    orderService.findByCustomerId();
+                    break;
+                }
+                case 7:{
+                    exit = false;
                     break;
                 }
                 default:{
@@ -60,7 +63,9 @@ public class OrderController {
         System.out.println("2. Update a order by order id");
         System.out.println("3. Delete a order by order id");
         System.out.println("4. Show all order");
-        System.out.println("5. Exit");
+        System.out.println("5. Search a order by order id");
+        System.out.println("6. Show list order of a customer by customer id");
+        System.out.println("7. Exit");
         System.out.print("Your choice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();

@@ -14,7 +14,11 @@ public interface OrderService {
 
     List<Order> findAll();
 
-    int check(String city, String district, String subDistrict);
+//    int check(String city, String district, String subDistrict);
 
     Map<Integer,Double> calculateTotalByMonth(int year);
+
+    Order searchById();
+
+    List<Order> findByCustomerId();
 }

@@ -71,45 +71,9 @@ public class OrderServiceImpl implements OrderService {
         return result;
     }
 
-    private Order orderInput(){
-        System.out.print("Enter customer id: ");
-        int customerID = Validator.getInstance().validateInteger();
-        Customer customer = customerDAO.searchById(customerID);
-        String phoneNumber= customer.getPhoneNumber();
-        int addressID = 0;
-        String detailAddress = null;
-        while (addressID == 0){
-            List<String> detailAddressList = detailAddressInput();
-            String city = detailAddressList.get(0);
-            String district = detailAddressList.get(1);
-            String subDistrict = detailAddressList.get(2);
-            detailAddress = subDistrict + ", " + district + ", " + city;
-            addressID = Integer.parseInt(detailAddressList.get(3));
-        }
-        Date orderDate = dateInput();
-        return new Order(customer.getFullName(),phoneNumber,detailAddress, orderDate,customerID,addressID);
-    }
-
-    @Override
-    public int check(String city, String district, String subDistrict) {
+    private int check(String city, String district, String subDistrict) {
         return orderDAO.check(city,district,subDistrict);
     }
-
-    @Override
-    public Map<Integer,Double> calculateTotalByMonth(int year) {
-        return orderDAO.calculateTotalByMonth(year);
-    }
-
-//    private double getTotal(int orderID, double deliveryFee) {
-//        List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderID);
-//        double total = 0;
-//        for (int i = 0; i < orderDetails.size(); i++) {
-//            total += orderDetails.get(i).getTotal();
-//        }
-//        return total+deliveryFee;
-//    }
-
-
 
     @Override
     public boolean update() {
@@ -126,31 +90,6 @@ public class OrderServiceImpl implements OrderService {
         }
         Order order = updateChoice(orderList,"customer id","detail order","detail address");
         return orderDAO.update(order) > 0;
-    }
-
-    private Order updateChoice(List<Order> orderList,Object ... args){
-        Order order = orderList.get(0);
-        String choice;
-        System.out.println("Do you want to change");
-        for (int i = 0; i < args.length; i++) {
-            System.out.println("+ " + args[i] + " ? Y/N" );
-            choice = Validator.getInstance().validateString();
-            if ("Y".equalsIgnoreCase(choice)){
-                System.out.print("Enter " + args[i] +" : ");
-                switch (i){
-                    case 0:
-                        order = updateChoiceCustomer(order);
-                        break;
-                    case 1:
-                        updateChoiceOrderDetail(order);
-                        break;
-                    case 2:
-                        order = updateChoiceAddress(order);
-                        break;
-                }
-            }
-        }
-        return order;
     }
 
     @Override
@@ -190,6 +129,76 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return orderDAO.findAll();
+    }
+
+    @Override
+    public Map<Integer,Double> calculateTotalByMonth(int year) {
+        return orderDAO.calculateTotalByMonth(year);
+    }
+
+    @Override
+    public Order searchById() {
+        out.print("Enter order id: ");
+        int orderID = Validator.getInstance().validateInteger();
+        Order order = orderDAO.searchById(orderID);
+        out.println("Order id: " + order.getOrderID());
+        out.println("Customer:\t\t\t " + order.getName());
+        out.println("Phone number:\t\t " + order.getPhoneNumber());
+        out.println("Detail address:\t\t " + order.getDetailAddress());
+        out.println("Order date:\t\t\t " + order.getOrderDate());
+        out.println("Total:\t\t\t\t " + order.getTotal());
+        out.println("");
+        List<OrderDetail> orderDetailList = orderDetailService.findByOrderId(order.getOrderID());
+        out.printf("%-20s%-20s%-20s%-20s\n","Product","Price","Quantity","Total");
+        for (OrderDetail orderDetail : orderDetailList){
+            Product product = productDAO.searchById(orderDetail.getProductId());
+            out.printf("%-20s%-20.2f%-20d%-20.2f\n",product.getName(),product.getDiscount_price(),orderDetail.getQuantity(),orderDetail.getTotal());
+        }
+        return order;
+    }
+
+
+    @Override
+    public List<Order> findByCustomerId() {
+        out.print("Enter customer id: ");
+        int customerID = Validator.getInstance().validateInteger();
+        List<Order> orderList = orderDAO.findByCustomerId(customerID);
+        out.println("----------List order of customer id " + customerID + "----------");
+        for (Order order : orderList){
+            out.println("Order id: " + order.getOrderID());
+            out.println("Customer:\t\t\t " + order.getName());
+            out.println("Phone number:\t\t " + order.getPhoneNumber());
+            out.println("Detail address:\t\t " + order.getDetailAddress());
+            out.println("Order date:\t\t\t " + order.getOrderDate());
+            out.println("Total:\t\t\t\t " + order.getTotal());
+            out.println("");
+            List<OrderDetail> orderDetailList = orderDetailService.findByOrderId(order.getOrderID());
+            out.printf("%-20s%-20s%-20s%-20s\n","Product","Price","Quantity","Total");
+            for (OrderDetail orderDetail : orderDetailList){
+                Product product = productDAO.searchById(orderDetail.getProductId());
+                out.printf("%-20s%-20.2f%-20d%-20.2f\n",product.getName(),product.getDiscount_price(),orderDetail.getQuantity(),orderDetail.getTotal());
+            }
+        }
+        return orderList;
+    }
+
+    private Order orderInput(){
+        System.out.print("Enter customer id: ");
+        int customerID = Validator.getInstance().validateInteger();
+        Customer customer = customerDAO.searchById(customerID);
+        String phoneNumber= customer.getPhoneNumber();
+        int addressID = 0;
+        String detailAddress = null;
+        while (addressID == 0){
+            List<String> detailAddressList = detailAddressInput();
+            String city = detailAddressList.get(0);
+            String district = detailAddressList.get(1);
+            String subDistrict = detailAddressList.get(2);
+            detailAddress = subDistrict + ", " + district + ", " + city;
+            addressID = Integer.parseInt(detailAddressList.get(3));
+        }
+        Date orderDate = dateInput();
+        return new Order(customer.getFullName(),phoneNumber,detailAddress, orderDate,customerID,addressID);
     }
 
     public Date dateInput(){
@@ -238,6 +247,31 @@ public class OrderServiceImpl implements OrderService {
         }
         list.add(String.valueOf(addressID));
         return list;
+    }
+
+    private Order updateChoice(List<Order> orderList,Object ... args){
+        Order order = orderList.get(0);
+        String choice;
+        System.out.println("Do you want to change");
+        for (int i = 0; i < args.length; i++) {
+            System.out.println("+ " + args[i] + " ? Y/N" );
+            choice = Validator.getInstance().validateString();
+            if ("Y".equalsIgnoreCase(choice)){
+                System.out.print("Enter " + args[i] +" : ");
+                switch (i){
+                    case 0:
+                        order = updateChoiceCustomer(order);
+                        break;
+                    case 1:
+                        updateChoiceOrderDetail(order);
+                        break;
+                    case 2:
+                        order = updateChoiceAddress(order);
+                        break;
+                }
+            }
+        }
+        return order;
     }
 
     public void updateChoiceOrderDetail(Order order){
